@@ -8,8 +8,8 @@ export function makeStationProvider() {
   return {
     simulated: false,
     async list() {
-      if (!config.postosUrl) throw unavailable('External station provider not configured');
-      const result = await externalJSON(`${config.postosUrl.replace(/\/$/,'')}/stations`, { apiKey: config.postosKey });
+      if (!config.stationsUrl) throw unavailable('External station provider not configured');
+      const result = await externalJSON(`${config.stationsUrl.replace(/\/$/,'')}/stations`, { apiKey: config.stationsKey });
       if (!Array.isArray(result.stations)) throw unavailable('Invalid external station response');
       return result.stations;
     }

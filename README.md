@@ -62,7 +62,7 @@ Outras opções já têm defaults: JWT TTL, CORS, timeouts e SSL do banco. Consu
 | API de postos externos | Lista dois registros explicitamente fictícios, com `origin: "MOCK"`. Os postos externos simulados **não são persistidos**; para abastecimento, cadastre um posto pelo endpoint local. |
 | Firebase Cloud Messaging | Registra notificações no outbox do PostgreSQL como `SIMULATED` e permite listá-las pela API, **sem enviar push real**. |
 
-Para usar integrações reais, configure `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `POSTOS_API_URL` e variáveis FCM, conforme os contratos de `docs/DECISIONS.md`. **Os provedores comerciais e seus endpoints reais não foram definidos na documentação original**; os adaptadores HTTP são contratos de referência que precisam ser ajustados ao fornecedor.
+Para usar integrações reais, configure `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `STATIONS_API_URL` e variáveis FCM, conforme os contratos de `docs/DECISIONS.md`. **Os provedores comerciais e seus endpoints reais não foram definidos na documentação original**; os adaptadores HTTP são contratos de referência que precisam ser ajustados ao fornecedor.
 
 ## Organização: um slice por caso de uso
 

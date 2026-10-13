@@ -20,10 +20,10 @@
 
 ## Integração real (contratos de referência)
 
-Para testar integração real: `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `GPS_API_KEY`, `POSTOS_API_URL`, `POSTOS_API_KEY`, `FCM_PROJECT_ID`, `FCM_CLIENT_EMAIL`, `FCM_PRIVATE_KEY`.
+Para testar integração real: `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `GPS_API_KEY`, `STATIONS_API_URL`, `STATIONS_API_KEY`, `FCM_PROJECT_ID`, `FCM_CLIENT_EMAIL`, `FCM_PRIVATE_KEY`.
 
 - `GET {GPS_API_URL}/vehicles/{vehicleId}/location` retorna `latitude`, `longitude`, `recordedAt`.
-- `GET {POSTOS_API_URL}/stations` retorna `{ "stations": [...] }`.
+- `GET {STATIONS_API_URL}/stations` retorna `{ "stations": [...] }`.
 - `POST {PAYMENT_API_URL}/charges` recebe `reference`, `amount`, `currency` e idempotency key; responde `status` (`APPROVED`/`REJECTED`), `transactionId`, `message`.
 - `GET {PAYMENT_API_URL}/charges/{paymentId}` retorna estado para conciliação (`APPROVED`/`REJECTED`/`UNKNOWN`).
 - FCM usa Firebase HTTP v1 e credenciais service account.
