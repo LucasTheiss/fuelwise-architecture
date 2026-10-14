@@ -1,12 +1,16 @@
 # FuelWise Backend — Node.js / Vertical Slice / SOLID
 
-Backend REST em **Node.js 22 (JavaScript ESM)**, Express, Zod e PostgreSQL 16, derivado dos 16 requisitos funcionais do PDF de arquitetura e do modelo de domínio fornecidos. É o **mesmo projeto anterior**, agora com os nomes de diretórios, arquivos, endpoints, entidades, tabelas, colunas e enums em **inglês**. Na aplicação JavaScript, payloads usam `camelCase`; no PostgreSQL, colunas usam `snake_case`. Documentação funcional permanece em português.
+Backend REST em **Node.js 22 (JavaScript ESM)**, Express, Zod e PostgreSQL 16, derivado dos 16 requisitos funcionais do PDF de arquitetura e do modelo de domínio fornecidos. Nomes de diretórios, arquivos, endpoints, entidades, tabelas, colunas e enums estão em **inglês**. Na aplicação JavaScript, payloads usam `camelCase`; no PostgreSQL, colunas usam `snake_case`. Documentação funcional permanece em português.
 
 **Ambiente previsto: homologação local com PostgreSQL real e os quatro serviços externos simulados. Não é um gateway financeiro real.**
 
 ## Rodar com o mínimo de configuração (Docker)
 
-Um `.env` **já preenchido** é fornecido no ZIP com **quatro configurações de banco/JWT/admin + `INTEGRATION_MODE=mock`**. Nenhuma credencial de Firebase, GPS, serviço de postos ou provedor de pagamentos é necessária.
+Crie o `.env` a partir do modelo e defina `JWT_SECRET` (mínimo de 32 caracteres) e `ADMIN_PASSWORD`. As demais configurações já vêm prontas, com `INTEGRATION_MODE=mock`. Nenhuma credencial de Firebase, GPS, serviço de postos ou provedor de pagamentos é necessária.
+
+```bash
+cp .env.example .env
+```
 
 Pré-requisito: Docker Desktop com Compose, engine iniciado e porta 3000 disponível (porta 5432 se o banco for acessado pelo host).
 
@@ -24,7 +28,7 @@ Endereços: `http://localhost:3000/health/live`, `http://localhost:3000/health/r
 
 O banco externo no host é `postgresql://fuelwise:fuelwise_dev@localhost:5432/fuelwise`; **dentro do Compose**, o host passa a ser `db` automaticamente.
 
-**Credenciais de homologação presentes no `.env`:** `admin@fuelwise.local` / `LocalTest@2026!`. Altere a senha e o segredo JWT antes de compartilhar o projeto ou publicar o servidor. Esses valores não são adequados para produção. O `.env` está excluído pelo `.gitignore`, mas foi incluído intencionalmente **no ZIP**.
+**Credenciais de homologação:** o administrador é criado com `ADMIN_EMAIL` e `ADMIN_PASSWORD` definidos no `.env`. Esses valores não são adequados para produção. O `.env` está excluído pelo `.gitignore` e não é versionado.
 
 Para interromper: `docker compose down`. Para apagar os dados e recomeçar do zero: `docker compose down -v` (**apaga todos os dados**, inclusive a senha previamente cadastrada).
 
@@ -45,7 +49,7 @@ Este caminho usa o `DATABASE_URL=...@localhost:5432/...` existente no `.env`.
 | Variável | Necessária? | Observação |
 |---|---|---|
 | `DATABASE_URL` | Sim | PostgreSQL real. Substituído automaticamente pelo Compose nos containers. |
-| `JWT_SECRET` | Sim | Mínimo de 32 caracteres. Valor de homologação já presente no `.env`. |
+| `JWT_SECRET` | Sim | Mínimo de 32 caracteres. Definido no `.env`. |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Para seed inicial | Conta ADMIN criada automaticamente pelo Compose. |
 | `ADMIN_NAME` | Opcional | Nome do administrador. |
 | `INTEGRATION_MODE=mock` | Recomendado | Habilita GPS, postos externos e Firebase simulados; pagamento usa `mock` automaticamente. |
@@ -68,7 +72,7 @@ Para usar integrações reais, configure `INTEGRATION_MODE=live`, `PAYMENT_PROVI
 
 ```text
 fuelwise-backend/
-├── .env                        # homologação: preenchido
+├── .env                        # criado a partir de .env.example (não versionado)
 ├── .env.example                # template sem segredo
 ├── compose.yaml
 ├── Dockerfile
@@ -139,4 +143,4 @@ npm run check
 npm test
 ```
 
-O ambiente utilizado para construir este ZIP não conseguiu instalar pacotes npm nem executar Docker. Foram validados scripts com `node --check` e testes unitários executáveis sem dependências externas; inicialização completa deverá ser verificada no ambiente de homologação com Docker. Não confunda mocks funcionais com integração homologada.
+O GitHub Actions executa `npm run check` e `npm test` a cada push e pull request. A inicialização completa com Docker deve ser verificada no ambiente de homologação. Não confunda mocks funcionais com integração homologada.
