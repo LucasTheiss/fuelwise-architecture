@@ -1,9 +1,8 @@
 import { pool, tx } from '../db/pool.js';
-import { makeNotifier } from '../integrations/fcmSender.js';
 import { config } from '../config.js';
-const sender = makeNotifier();
 let running = false;
-export async function processOutboxOnce() {
+/** O canal de envio (Firebase ou mock) é injetado pelo composition root (server.js). */
+export async function processOutboxOnce(sender) {
   const rows = await tx(async db => {
     const r = await db.query(`SELECT id,account_id,type,payload,attempts FROM notification
       WHERE status IN ('PENDING','FAILED','PROCESSING') AND next_attempt_at<=now() AND attempts < 5
@@ -30,8 +29,8 @@ export async function processOutboxOnce() {
   }
   return rows.length;
 }
-export function startOutboxWorker() {
-  const tick=async()=>{ if(running) return; running=true; try{await processOutboxOnce();}catch(e){console.error('outbox',e.message);}finally{running=false;} };
+export function startOutboxWorker(sender) {
+  const tick=async()=>{ if(running) return; running=true; try{await processOutboxOnce(sender);}catch(e){console.error('outbox',e.message);}finally{running=false;} };
   const timer=setInterval(tick,config.outboxIntervalMs);timer.unref();
   void tick();
   return () => clearInterval(timer);

@@ -91,6 +91,7 @@ fuelwise-backend/
 │   └── start-local.sh
 ├── src/
 │   ├── app.js                  # composition root / injeção de dependências
+│   ├── domain/                 # regras de negócio do abastecimento e do pagamento (Entities)
 │   ├── server.js
 │   ├── shared/
 │   │   ├── auth/
@@ -114,7 +115,7 @@ fuelwise-backend/
 └── tests/
 ```
 
-Em cada slice: `route.js` declara HTTP/RBAC/validação, `useCase.js` implementa o fluxo, e `repository.js` existe quando separação de persistência é particularmente necessária. O gateway e provedores são substituíveis por adapters, sem alterar casos de uso. A divisão é por **funcionalidade**, não por pastas globais `controllers/services/repositories`.
+Em cada slice: `route.js` declara HTTP/RBAC/validação, `useCase.js` implementa o fluxo, e `repository.js` existe quando separação de persistência é particularmente necessária. No núcleo financeiro (`fuelings/create`, `fuelings/approve`, `payments/pay` e `payments/reconcile`), os casos de uso dependem só de `src/domain` e recebem as portas `fuelingStore`, `paymentStore` e `gateway` pelo `app.js`; os testes em `tests/architecture-rules.test.js` verificam essas regras. O gateway e provedores são substituíveis por adapters, sem alterar casos de uso. A divisão é por **funcionalidade**, não por pastas globais `controllers/services/repositories`.
 
 ## Primeiro fluxo funcional
 

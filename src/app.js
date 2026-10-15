@@ -6,7 +6,9 @@ import { pool } from './shared/db/pool.js';
 import { errorHandler,asyncRoute } from './shared/http/errors.js';
 import { config } from './shared/config.js';
 import { makeGateway } from './shared/integrations/paymentGateway.js';
-import { reservePayment,finalizePayment } from './slices/payments/pay/repository.js';
+import { reservePayment,finalizePayment,findPayment } from './slices/payments/pay/repository.js';
+import { requestFueling } from './slices/fuelings/create/repository.js';
+import { decideFueling as saveFuelingDecision } from './slices/fuelings/approve/repository.js';
 import { makeGpsProvider } from './shared/integrations/gpsProvider.js';
 import { makeStationProvider } from './shared/integrations/stationProvider.js';
 import { register as registerSignup } from './slices/auth/register-carrier/route.js';
@@ -47,7 +49,8 @@ import { register as registerDevice } from './slices/notifications/register-toke
 /** Composition root: construct adapters once, inject into vertical slices. */
 export function createApp(overrideDeps={}) {
   const deps={
-    gateway:makeGateway(),paymentStore:{reserve:reservePayment,finalize:finalizePayment},gps:makeGpsProvider(),stations:makeStationProvider(),
+    gateway:makeGateway(),paymentStore:{reserve:reservePayment,finalize:finalizePayment,find:findPayment},
+    fuelingStore:{request:requestFueling,decide:saveFuelingDecision},gps:makeGpsProvider(),stations:makeStationProvider(),
     isPaymentMock:config.paymentProvider==='mock',...overrideDeps
   };
   const app=express();

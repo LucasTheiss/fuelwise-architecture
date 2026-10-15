@@ -1,3 +1,4 @@
+import { DomainError } from '../../domain/errors.js';
 export class AppError extends Error {
   constructor(status, code, message, details) {
     super(message);
@@ -15,7 +16,9 @@ export const unavailable = (message) => new AppError(503, 'SERVICE_UNAVAILABLE',
 export const asyncRoute = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 export function errorHandler(err, req, res, next) {
   if (res.headersSent) return next(err);
-  if (err.code === '23505') err = conflict('Registro duplicado ou operação concorrente em conflito');
+  if (err instanceof DomainError) err = err.kind === 'not_found' ? new AppError(404, 'NOT_FOUND', err.message)
+    : err.kind === 'conflict' ? conflict(err.message) : badRequest(err.message);
+  else if (err.code === '23505') err = conflict('Registro duplicado ou operação concorrente em conflito');
   else if (err.code === '23503') err = badRequest('Referência inexistente');
   else if (err.code === '23514' || err.code === '22P02') err = badRequest('Dados não atendem às regras de integridade');
   const status = err.status ?? 500;

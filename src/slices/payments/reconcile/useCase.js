@@ -1,11 +1,12 @@
-import { pool,one } from '../../../shared/db/pool.js';
-import { notFound,conflict } from '../../../shared/http/errors.js';
+import { assertReconcilable,isDefinitive } from '../../../domain/payment.js';
+import { notFound } from '../../../domain/errors.js';
+/** Concilia um pagamento sem resultado usando só as portas paymentStore e gateway. */
 export async function execute({actor,params},deps) {
-  const p=await one(pool,'SELECT * FROM payment WHERE id=$1',[params.id]);
-  if (!p) throw notFound('Pagamento');
-  if (!['PROCESSING','UNKNOWN'].includes(p.status)) throw conflict('Pagamento já possui resultado definitivo');
-  const result=await deps.gateway.check({paymentId:p.id,transactionId:p.gateway_transaction_code});
-  if (result.status==='UNKNOWN') return {payment:p,requiresReconciliation:true};
-  const saved=await deps.paymentStore.finalize(p.id,result,actor);
+  const payment=await deps.paymentStore.find(params.id);
+  if (!payment) throw notFound('Pagamento');
+  assertReconcilable(payment);
+  const result=await deps.gateway.check({paymentId:payment.id,transactionId:payment.gateway_transaction_code});
+  if (!isDefinitive(result.status)) return {payment,requiresReconciliation:true};
+  const saved=await deps.paymentStore.finalize(payment.id,result,actor);
   return {payment:saved,conciliado:true};
 }

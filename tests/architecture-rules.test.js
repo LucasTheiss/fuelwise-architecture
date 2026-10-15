@@ -63,11 +63,33 @@ test('useCase.js nao conhece Express nem o registro de rotas', () => {
   }
 });
 
-test('DIP no pagamento: casos de uso recebem portas e nao importam banco ou gateway', () => {
-  const alvo = graph.find(g => g.file === 'slices/payments/pay/useCase.js');
-  assert.ok(alvo, 'slices/payments/pay/useCase.js nao encontrado');
-  const proibidos = alvo.imports.filter(i => i.startsWith('shared/db/') || i.startsWith('shared/integrations/') || i === 'pg');
-  assert.deepEqual(proibidos, [], `pay/useCase.js importa ${proibidos.join(', ')}`);
+test('Clean Architecture: o domínio (Entities) não depende de nenhuma outra camada', () => {
+  const domain = graph.filter(g => g.file.startsWith('domain/'));
+  assert.ok(domain.length > 0, 'src/domain nao encontrado');
+  for (const { file, imports } of domain) {
+    const proibidos = imports.filter(i => !i.startsWith('domain/') && i !== 'decimal.js');
+    assert.deepEqual(proibidos, [], `${file} importa ${proibidos.join(', ')}`);
+  }
+});
+
+// Núcleo financeiro: casos de uso que mudam abastecimento e pagamento.
+const CORE = ['fuelings/create', 'fuelings/approve', 'payments/pay', 'payments/reconcile'];
+
+test('DIP no núcleo financeiro: casos de uso dependem só do domínio e recebem as portas por injeção', () => {
+  for (const slice of CORE) {
+    const alvo = graph.find(g => g.file === `slices/${slice}/useCase.js`);
+    assert.ok(alvo, `slices/${slice}/useCase.js nao encontrado`);
+    const proibidos = alvo.imports.filter(i => !i.startsWith('domain/'));
+    assert.deepEqual(proibidos, [], `${slice}/useCase.js importa ${proibidos.join(', ')}`);
+  }
+});
+
+test('Composition root: só app.js e server.js criam os adaptadores de integração', () => {
+  for (const { file, imports } of graph) {
+    if (file === 'app.js' || file === 'server.js' || file.startsWith('shared/integrations/')) continue;
+    const proibidos = imports.filter(i => i.startsWith('shared/integrations/'));
+    assert.deepEqual(proibidos, [], `${file} importa ${proibidos.join(', ')}`);
+  }
 });
 
 test('todo slice tem route.js como ponto de entrada', async () => {

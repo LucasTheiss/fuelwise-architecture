@@ -2,10 +2,11 @@ import { assertConfig,config } from './shared/config.js';
 import { pool } from './shared/db/pool.js';
 import { createApp } from './app.js';
 import { startOutboxWorker } from './shared/notifications/outbox.js';
+import { makeNotifier } from './shared/integrations/fcmSender.js';
 assertConfig();
 const app=createApp();
 const server=app.listen(config.port,()=>console.log(JSON.stringify({event:'server_ready',port:config.port,env:config.env})));
-const stopWorker=startOutboxWorker();
+const stopWorker=startOutboxWorker(makeNotifier());
 async function shutdown() {
   stopWorker();
   server.close(async ()=>{await pool.end();process.exit(0);});
