@@ -1,1 +1,25 @@
-{"name":"fuelwise-frontend","version":"1.0.0","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"dev":"vite --host 0.0.0.0","build":"vite build && vite build --config stations/vite.config.js && vite build --config trips/vite.config.js","build:shell":"vite build","build:stations":"vite build --config stations/vite.config.js","build:trips":"vite build --config trips/vite.config.js","preview":"vite preview --host 0.0.0.0","test":"node --test tests/*.test.js"},"dependencies":{"fuelwise-backend":"file:../..","react":"^19.0.0","react-dom":"^19.0.0"},"devDependencies":{"vite":"^6.1.0"}}
+{
+  "name": "fuelwise-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build && vite build --config stations/vite.config.js && vite build --config trips/vite.config.js",
+    "build:shell": "vite build",
+    "build:stations": "vite build --config stations/vite.config.js",
+    "build:trips": "vite build --config trips/vite.config.js",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.1.0"
+  }
+}

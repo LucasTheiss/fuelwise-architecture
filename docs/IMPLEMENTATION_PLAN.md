@@ -135,3 +135,17 @@ Dispatcher assíncrono conectado ao servidor SQL: claim com lease, retry e dead
 letter após cinco tentativas. Consumidor grava auditoria em transação e deduplica
 por event_id. AsyncAPI documenta payload/publicador/consumidor. Dois testes de
 publicação/ack e retry passaram; validação real da deduplicação depende de SQL.
+
+### Fase I — resultado
+
+Compose distribuído com volumes isolados, Dockerfiles/lockfiles independentes,
+CI por componente e smoke ponta a ponta implementados. 178 arquivos JS/MJS
+passaram na análise sintática. Suite local: 55 aprovados, dois testes reais
+ignorados no host e executados separadamente nos containers com sucesso.
+Mongo real: CRUD/RBAC/validação; SQL real: CRUD, concorrência, isolamento,
+outbox atômico e deduplicação. Smoke e UI Edge headless passaram.
+
+Corrigidos UUIDs SQL em maiúsculas, referência file:../.. nos lockfiles e porta
+Windows 8080 bloqueada (usada 18080). Original permanece padrão; modo distribuído
+encaminha rotas e exige domínios legados vazios. Financeiro de novas entidades
+não migrado. Scripts de exportação e Docker Hub preparados, sem publicar.

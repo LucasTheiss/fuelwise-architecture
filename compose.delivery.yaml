@@ -1,0 +1,116 @@
+name: fuelwise-delivery
+services:
+  legacy-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fuelwise
+      POSTGRES_USER: fuelwise
+      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD:?set LOCAL_DB_PASSWORD}
+    volumes: [legacy_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U fuelwise -d fuelwise"]
+      interval: 5s
+      retries: 20
+  legacy-init:
+    build: .
+    environment: &legacy_env
+      DATABASE_URL: postgresql://fuelwise:${LOCAL_DB_PASSWORD}@legacy-db:5432/fuelwise
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@fuelwise.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD}
+      INTEGRATION_MODE: mock
+      DOMAIN_MODE: distributed
+      STATIONS_SERVICE_URL: http://stations:3001
+      TRIPS_SERVICE_URL: http://trips:3002
+    command: [sh, -c, "npm run db:migrate && npm run db:seed:admin"]
+    depends_on:
+      legacy-db: {condition: service_healthy}
+  legacy:
+    build: .
+    environment: *legacy_env
+    depends_on:
+      legacy-init: {condition: service_completed_successfully}
+    ports: ["127.0.0.1:3000:3000"]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://localhost:3000/health/ready').then(r=>process.exit(r.ok?0:1))"]
+      interval: 5s
+      retries: 20
+  mongo:
+    image: mongo:7
+    volumes: [mongo_data:/data/db]
+    healthcheck:
+      test: [CMD, mongosh, --quiet, --eval, "db.adminCommand({ping:1})"]
+      interval: 5s
+      retries: 20
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${LOCAL_SQL_PASSWORD:?set LOCAL_SQL_PASSWORD}
+    volumes: [sql_data:/var/opt/mssql]
+    healthcheck:
+      test: [CMD-SHELL, '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" -b']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+  sql-db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SQLCMDPASSWORD: ${LOCAL_SQL_PASSWORD}
+    entrypoint: [/opt/mssql-tools18/bin/sqlcmd]
+    command: [-S, sql, -U, sa, -C, -b, -Q, "IF DB_ID('fuelwise_trips') IS NULL CREATE DATABASE fuelwise_trips"]
+    depends_on:
+      sql: {condition: service_healthy}
+  trips-init:
+    build: projects/fuelwise-microservice-sql
+    environment: &sql_env
+      AZURE_SQL_SERVER: sql
+      AZURE_SQL_DATABASE: fuelwise_trips
+      AZURE_SQL_USER: sa
+      AZURE_SQL_PASSWORD: ${LOCAL_SQL_PASSWORD}
+      SQL_LOCAL_DEVELOPMENT: "true"
+      LEGACY_URL: http://legacy:3000
+    command: [npm, run, db:migrate]
+    depends_on:
+      sql-db-init: {condition: service_completed_successfully}
+  stations:
+    build: projects/fuelwise-microservice-mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DATABASE: fuelwise_stations
+      LEGACY_URL: http://legacy:3000
+    depends_on:
+      mongo: {condition: service_healthy}
+      legacy: {condition: service_healthy}
+  trips:
+    build: projects/fuelwise-microservice-sql
+    environment: *sql_env
+    depends_on:
+      trips-init: {condition: service_completed_successfully}
+      legacy: {condition: service_healthy}
+  function:
+    build: projects/fuelwise-azure-function
+  bff:
+    build: projects/fuelwise-bff
+    environment:
+      LEGACY_URL: http://legacy:3000
+      STATIONS_URL: http://stations:3001
+      TRIPS_URL: http://trips:3002
+      FUNCTION_URL: http://function:7071/api/indicators
+    depends_on: [stations, trips, function]
+  gateway:
+    build: infrastructure/gateway
+    environment:
+      BFF_URL: http://bff:3003
+      CORS_ORIGIN: http://localhost:5173
+    ports: ["127.0.0.1:18080:8080"]
+    depends_on: [bff]
+  frontend:
+    build: projects/fuelwise-frontend
+    ports: ["127.0.0.1:5173:80"]
+    depends_on: [gateway]
+volumes:
+  legacy_data:
+  mongo_data:
+  sql_data:

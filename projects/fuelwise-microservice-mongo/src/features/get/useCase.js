@@ -1,2 +1,2 @@
 import { missing } from '../../domain/errors.js';
-export async function execute(input,{repository}){const station=await repository.get(input);if(!station)throw missing();return {station};}
+export async function execute(input,{repository}){const station=await repository.get(input);if(!station)throw missing();return {station,currentPrices:await repository.currentPrices(input)};}

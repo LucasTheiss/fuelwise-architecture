@@ -8,6 +8,39 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install
+      - run: npm ci
       - run: npm run check
       - run: npm test
+  components:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [projects/fuelwise-microservice-mongo, projects/fuelwise-microservice-sql, projects/fuelwise-bff, projects/fuelwise-azure-function, projects/fuelwise-frontend, infrastructure/gateway]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm test
+      - if: matrix.project == 'projects/fuelwise-frontend'
+        run: npm run build
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - name: Generate local disposable credentials
+        run: |
+          secret=$(openssl rand -hex 24)
+          printf 'LOCAL_DB_PASSWORD=%s\nLOCAL_SQL_PASSWORD=Fw!%s\nJWT_SECRET=%s\nADMIN_EMAIL=admin@fuelwise.local\nADMIN_PASSWORD=Fw!%s\n' "$secret" "$secret" "$secret" "$secret" > .env.delivery
+      - run: docker compose --env-file .env.delivery -f compose.delivery.yaml up -d --build --wait --wait-timeout 300
+      - run: node scripts/smoke-delivery.mjs
+      - if: always()
+        run: docker compose --env-file .env.delivery -f compose.delivery.yaml down

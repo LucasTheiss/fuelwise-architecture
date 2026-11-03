@@ -13,6 +13,7 @@ export function createApp(deps){
   app.get('/aggregated-data',auth,route(async(q,r)=>{const result=await aggregate(q.headers.authorization,deps);r.status(result.degraded?207:200).json(result);}));
   for(const action of ['login','refresh','logout'])app.post('/api/v1/auth/'+action,route(async(q,r)=>r.json(await deps.client(deps.legacyUrl+'/api/v1/auth/'+action,{method:'POST',body:q.body}))));
   app.get('/api/v1/auth/me',auth,(q,r)=>r.json({account:q.account}));
+  app.get('/api/v1/events',auth,route(async(q,r)=>r.json(await deps.client(deps.tripsUrl+'/api/v1/events',{bearer:q.headers.authorization}))));
   for(const [resource,url]of [['stations',deps.stationsUrl],['trips',deps.tripsUrl],['drivers',deps.legacyUrl],['vehicles',deps.legacyUrl]]){
     // Fixed resource allowlist and validated suffix avoid creating an open proxy.
     app.use('/api/v1/'+resource,auth,route(async(q,r,n)=>{

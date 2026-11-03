@@ -11,6 +11,7 @@ import { requestFueling } from './slices/fuelings/create/repository.js';
 import { decideFueling as saveFuelingDecision } from './slices/fuelings/approve/repository.js';
 import { makeGpsProvider } from './shared/integrations/gpsProvider.js';
 import { makeStationProvider } from './shared/integrations/stationProvider.js';
+import { mountExtractedDomains } from './shared/integrations/extractedDomains.js';
 import { register as registerSignup } from './slices/auth/register-carrier/route.js';
 import { register as registerLogin } from './slices/auth/login/route.js';
 import { register as registerRefresh } from './slices/auth/refresh/route.js';
@@ -71,6 +72,7 @@ export function createApp(overrideDeps={}) {
   app.get('/health/ready',asyncRoute(async(_req,res)=>{
     await pool.query('SELECT id FROM account LIMIT 1'); res.json({status:'ready'});
   }));
+  mountExtractedDomains(app);
   [registerSignup,registerLogin,registerRefresh,registerLogout,registerMe,
     registerRequests,registerCarrierDecision,registerDriver,listDrivers,
     registerVehicle,listVehicles,locateVehicle,startTrip,listTrips,finishTrip,
