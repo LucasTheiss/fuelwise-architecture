@@ -82,3 +82,11 @@ provisionamento dependem de credenciais, autorização e confirmação da gratui
   coordenada; não tratar duas cópias mutáveis como fonte de verdade.
 - Validações locais não substituem CRUD real no Atlas/Azure, deploy público e vídeo.
 - Não inventar URLs ou screenshots. Registrar pendências de maneira verificável.
+
+### Fase B — resultado
+
+Serviço Postos implementado com CRUD/desativação, consulta geográfica, filiados,
+histórico de preços, identidade HTTP, Swagger, Docker e lockfile independente.
+Teste HTTP de CRUD/RBAC/validação passou; teste Mongo real disponível e ignorado
+por ausência de TEST_MONGODB_URI. Regressão legado: 38/38 após excluir somente
+os documentos de entrada da convenção de nomes. Atlas ainda não homologado.
