@@ -45,6 +45,8 @@ import { register as listComplaints } from './slices/complaints/list/route.js';
 import { register as moderateComplaint } from './slices/complaints/moderate/route.js';
 import { register as listNotifications } from './slices/notifications/list/route.js';
 import { register as registerDevice } from './slices/notifications/register-token/route.js';
+import { register as migrationAssignment } from './slices/migration/assignment/route.js';
+import { register as migrationPending } from './slices/migration/pending/route.js';
 
 /** Composition root: construct adapters once, inject into vertical slices. */
 export function createApp(overrideDeps={}) {
@@ -75,7 +77,7 @@ export function createApp(overrideDeps={}) {
     createStation,listStations,externalStations,stationDetail,listPrices,addPrice,
     createFueling,listFueling,decideFueling,payFueling,getPayment,reconcilePayment,
     reportFueling,auditPayments,reportComplaint,listComplaints,moderateComplaint,
-    listNotifications,registerDevice].forEach(register => register(app,deps));
+    listNotifications,registerDevice,migrationAssignment,migrationPending].forEach(register => register(app,deps));
   app.use((_req,res)=>res.status(404).json({error:{code:'ROUTE_NOT_FOUND',message:'Rota não encontrada'}}));
   app.use(errorHandler);
   return app;

@@ -90,3 +90,12 @@ histórico de preços, identidade HTTP, Swagger, Docker e lockfile independente.
 Teste HTTP de CRUD/RBAC/validação passou; teste Mongo real disponível e ignorado
 por ausência de TEST_MONGODB_URI. Regressão legado: 38/38 após excluir somente
 os documentos de entrada da convenção de nomes. Atlas ainda não homologado.
+
+### Fase C — resultado
+
+Viagens implementado com porta SQL, consultas parametrizadas, índices exclusivos,
+transações, outbox atômico, CRUD/desativação e finalização. Duas consultas HTTP
+adicionadas ao legado para validar frota/pendências sem acesso cruzado a bancos.
+Testes: dois cenários (domínio e fluxo HTTP) aprovados, legado 38/38. SQL real
+não executado; credenciais e engine ainda indisponíveis. A ponte financeira
+com registros novos continua sendo uma restrição de migração a documentar.

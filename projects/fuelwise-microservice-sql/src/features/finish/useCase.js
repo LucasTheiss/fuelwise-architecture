@@ -1,0 +1,2 @@
+import {assertVisible,assertFinishable,assertEditable,assertDeletable} from '../../domain/trip.js';
+export async function execute({actor,body,query,id,bearer},{repository,fleet}){const current=await repository.get(id,actor);assertVisible(current,actor);const pending=await fleet.hasPending(actor,id,bearer);return {trip:await repository.mutate(id,actor,trip=>{assertFinishable(trip,pending);return {changes:{status:'FINISHED',ended_at:new Date().toISOString()},type:'TripFinished'};})};}
