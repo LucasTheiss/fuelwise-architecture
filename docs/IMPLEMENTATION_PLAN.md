@@ -114,3 +114,10 @@ Function HTTP v4 implementada e OpenAPI disponível. Três testes passaram;
 handler aceita dados reais do BFF e preserva null em falhas parciais. Adaptador
 HTTP local explícito para desenvolvimento. Runtime Azure/Core Tools e deploy
 não executados neste ambiente; nenhuma cobrança ou recurso criado.
+
+### Fase F — resultado
+
+Gateway independente implementado com destino fixo, allowlist de rotas, CORS,
+limites por IP e suporte HTTPS por certificado/terminador confiável. Teste de
+roteamento, origem rejeitada e excesso de requisições passou. TLS público ainda
+não validado; produção recusa iniciar sem configuração explícita de HTTPS.

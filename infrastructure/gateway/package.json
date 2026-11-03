@@ -1,0 +1,1 @@
+{"name":"fuelwise-gateway","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.js","test":"node --test tests/*.test.js"},"dependencies":{"cors":"^2.8.5","express":"^4.21.2","express-rate-limit":"^7.5.0","fuelwise-backend":"file:../..","helmet":"^8.0.0"}}
