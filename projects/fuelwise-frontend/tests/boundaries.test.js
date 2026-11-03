@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
+test('remotos recebem API do shell e são carregados em runtime',async()=>{const shell=await readFile('shell/main.jsx','utf8');assert.match(shell,/import\(\/\* @vite-ignore \*\/ url\)/);for(const module of ['stations','trips']){const code=await readFile(`${module}/main.jsx`,'utf8');assert.match(code,/export function mount/);assert.doesNotMatch(code,/fetch\(|https?:\/\//);}});

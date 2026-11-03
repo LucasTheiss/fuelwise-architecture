@@ -121,3 +121,10 @@ Gateway independente implementado com destino fixo, allowlist de rotas, CORS,
 limites por IP e suporte HTTPS por certificado/terminador confiável. Teste de
 roteamento, origem rejeitada e excesso de requisições passou. TLS público ainda
 não validado; produção recusa iniciar sem configuração explícita de HTTPS.
+
+### Fase G — resultado
+
+Shell React e dois remotos ES modules com contratos mount/unmount, cada um com
+build independente e carregamento em runtime. CRUD, dashboard, login, estados de
+espera/erro e feedback implementados. Três builds de produção e teste de fronteiras
+passaram. Verificação visual/E2E ainda necessária. Tokens somente em memória.
