@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {indicators,handler} from '../src/indicators.js';
+test('calcula indicadores reais das viagens recebidas',()=>assert.deepEqual(indicators({stations:[{id:'s'}],trips:[{id:'a',status:'IN_PROGRESS'},{id:'b',status:'FINISHED'}]}),{totalStations:1,totalTrips:2,activeTrips:1,finishedTrips:1,complete:true}));
+test('falha parcial não é zero; vazio é zero',()=>{assert.equal(indicators({stations:null,trips:[]}).totalStations,null);assert.equal(indicators({stations:[],trips:[]}).totalStations,0);});
+test('rejeita corpo inválido, status e excesso',async()=>{assert.throws(()=>indicators({stations:[],trips:[{id:'x',status:'PAID'}]}));assert.throws(()=>indicators({stations:Array(101).fill({id:'s'}),trips:[]}));assert.equal((await handler({json:async()=>{throw Error('bad JSON');}})).status,400);});

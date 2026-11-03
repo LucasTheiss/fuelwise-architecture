@@ -1,0 +1,4 @@
+import {z} from 'zod';
+const schema=z.object({stations:z.array(z.object({id:z.string()})).max(100).nullable(),trips:z.array(z.object({id:z.string(),status:z.enum(['IN_PROGRESS','FINISHED'])})).max(100).nullable()}).strict();
+export function indicators(input){const {stations,trips}=schema.parse(input);return {totalStations:stations?.length??null,totalTrips:trips?.length??null,activeTrips:trips?trips.filter(t=>t.status==='IN_PROGRESS').length:null,finishedTrips:trips?trips.filter(t=>t.status==='FINISHED').length:null,complete:stations!==null&&trips!==null};}
+export async function handler(request){try{return {status:200,jsonBody:indicators(await request.json())};}catch{return {status:400,jsonBody:{error:{code:'VALIDATION_ERROR',message:'Informe stations/trips válidos (até 100 registros cada)'}}};}}

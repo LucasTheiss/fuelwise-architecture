@@ -107,3 +107,10 @@ agregação dos dois serviços e chamada HTTP da Function, HTTP 207 em falha par
 Quatro testes passaram. Os indicadores declaram explicitamente amostra de até
 100 registros por serviço. Function real e integração de processos serão
 verificadas nas fases E/I; publicação ainda pendente.
+
+### Fase E — resultado
+
+Function HTTP v4 implementada e OpenAPI disponível. Três testes passaram;
+handler aceita dados reais do BFF e preserva null em falhas parciais. Adaptador
+HTTP local explícito para desenvolvimento. Runtime Azure/Core Tools e deploy
+não executados neste ambiente; nenhuma cobrança ou recurso criado.
