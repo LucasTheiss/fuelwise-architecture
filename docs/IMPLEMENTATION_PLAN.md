@@ -59,15 +59,22 @@ apresentar bancos locais ou mocks como integração Atlas/Azure homologada.
 ## Fases e commits
 
 - [x] A: diagnóstico, baseline e plano (este documento).
-- [ ] B: serviço Mongo, CRUD/preços, Swagger, testes e Docker.
-- [ ] C: serviço SQL, CRUD/transições, migration, testes e Docker.
-- [ ] D: BFF, proxies, agregação e testes.
-- [ ] E: Function HTTP, indicadores, validação e testes.
-- [ ] F: gateway, CORS, TLS e limites.
-- [ ] G: shell React e dois módulos carregados em runtime.
-- [ ] H: publicação/consumo assíncrono, retry, duplicidade e AsyncAPI.
-- [ ] I: Compose, builds, CI, testes integrados e preparação Docker Hub.
-- [ ] J: ARC42, C4, Canvas, custos, READMEs, evidências e roteiro.
+- [x] B: serviço Mongo, CRUD/preços, Swagger, testes locais e Docker.
+- [x] C: serviço SQL, CRUD/transições, migration, testes locais e Docker.
+- [x] D: BFF, proxies, agregação e testes.
+- [x] E: código Function HTTP, indicadores, validação e testes do handler.
+- [x] F: gateway, CORS, suporte TLS e limites locais.
+- [x] G: shell React e dois módulos carregados em runtime.
+- [x] H: publicação/consumo assíncrono, retry, duplicidade e AsyncAPI.
+- [x] I: Compose, builds, CI preparado, testes integrados e preparação Docker Hub.
+- [x] J: ARC42, C4, Canvas, custos, READMEs, evidências locais e roteiro.
+
+Os itens marcados representam implementação/validação local, não aceite cloud.
+- [ ] Homologação Atlas e Azure SQL reais e elegíveis ao gratuito.
+- [ ] Runtime Azure Functions e custos de storage comprovados.
+- [ ] Deploy HTTPS, cinco repositórios e Docker Hub públicos autorizados.
+- [ ] Evidências cloud e vídeo pelos quatro integrantes.
+- [ ] Ponte financeira e migração de banco legado com entidades existentes.
 
 Cada fase terá validação e commit próprio. Publicação GitHub/Docker Hub e
 provisionamento dependem de credenciais, autorização e confirmação da gratuidade.
@@ -149,3 +156,12 @@ Corrigidos UUIDs SQL em maiúsculas, referência file:../.. nos lockfiles e port
 Windows 8080 bloqueada (usada 18080). Original permanece padrão; modo distribuído
 encaminha rotas e exige domínios legados vazios. Financeiro de novas entidades
 não migrado. Scripts de exportação e Docker Hub preparados, sem publicar.
+
+### Fase J — resultado
+
+ARC42 com 11 seções, C4 contexto/contêineres/componentes e sequência, Canvas,
+matriz de custos consultada em fontes oficiais, roteiro para quatro integrantes,
+links públicos marcados pendentes, READMEs e screenshots locais reais.
+PDF consolidado de 16 páginas em output/pdf/FuelWise_Delivery3.pdf, renderizado
+e revisado visualmente. Nenhuma publicação externa ou provisionamento realizado.
+A entrega cloud não é declarada concluída; gates e limites em VALIDATION.md.

@@ -1,5 +1,23 @@
 # FuelWise Backend — Node.js / Vertical Slice / SOLID
 
+## Entrega 3 — execução distribuída
+
+Os componentes novos estão em `projects/`: Postos/MongoDB, Viagens/Azure SQL,
+BFF, Azure Function e microfrontends React. Gateway em `infrastructure/gateway`.
+O backend original abaixo continua disponível, sem migração destrutiva.
+
+- [Plano e resultados por fase](docs/IMPLEMENTATION_PLAN.md)
+- [Executar com Docker e preparar publicação](docs/DEPLOYMENT.md)
+- [Arquitetura ARC42 e C4](docs/ARC42_DELIVERY3.md)
+- [Custos e limites de autorização](docs/CLOUD_COSTS.md)
+- [Validação efetivamente executada](docs/VALIDATION.md)
+- [Roteiro de demonstração](docs/DEMO_SCRIPT.md)
+
+`compose.delivery.yaml` usa volumes próprios. Frontend local em
+http://localhost:5173 e gateway em http://localhost:18080. A demonstração cloud,
+Atlas/Azure reais e publicação pública ainda dependem dos gates documentados.
+O financeiro distribuído e a migração de dados existentes não estão concluídos.
+
 Backend REST em **Node.js 22 (JavaScript ESM)**, Express, Zod e PostgreSQL 16, derivado dos 16 requisitos funcionais do PDF de arquitetura e do modelo de domínio fornecidos. Nomes de diretórios, arquivos, endpoints, entidades, tabelas, colunas e enums estão em **inglês**. Na aplicação JavaScript, payloads usam `camelCase`; no PostgreSQL, colunas usam `snake_case`. Documentação funcional permanece em português.
 
 **Ambiente previsto: homologação local com PostgreSQL real e os quatro serviços externos simulados. Não é um gateway financeiro real.**

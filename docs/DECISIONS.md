@@ -32,4 +32,19 @@ Para testar integração real: `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`,
 
 ## Lacunas conhecidas
 
+### Evolução Entrega 3
+
+- Dois serviços extraídos, Postos/Mongo e Viagens/Azure SQL, prevalecem sobre os
+  quatro serviços futuros do PDF. A autenticação/frota permanecem no legado.
+- Modo distribuído isolado recusa banco legado com postos/viagens existentes;
+  não há migração destrutiva nem duas fontes mutáveis silenciosas.
+- Histórico financeiro continua no modo original. Ponte para entidades novas
+  e migração de instalações existentes não estão concluídas.
+- Outbox SQL + worker/auditoria idempotente evita dependência de broker pago.
+- Remotos React usam ES modules em runtime, contrato mount/unmount versionado.
+- TLS/custos/publicação cloud são gates separados dos testes Docker locais.
+- Estado atualizado: `ARC42_DELIVERY3.md`, `VALIDATION.md` e `CLOUD_COSTS.md`.
+
+### Registro histórico anterior à Entrega 3
+
 Integração E2E com PostgreSQL e parceiros externos ainda não executada neste ambiente; testes unitários e estáticos estão incluídos. O DER do PDF foi considerado mais atual que o modelo Astah histórico anexado. Estratégia anti-XSS/armazenamento do refresh token deve ser definida com o frontend. Requisitos de disponibilidade e latência necessitam testes reais.
