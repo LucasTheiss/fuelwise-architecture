@@ -128,3 +128,10 @@ Shell React e dois remotos ES modules com contratos mount/unmount, cada um com
 build independente e carregamento em runtime. CRUD, dashboard, login, estados de
 espera/erro e feedback implementados. Três builds de produção e teste de fronteiras
 passaram. Verificação visual/E2E ainda necessária. Tokens somente em memória.
+
+### Fase H — resultado
+
+Dispatcher assíncrono conectado ao servidor SQL: claim com lease, retry e dead
+letter após cinco tentativas. Consumidor grava auditoria em transação e deduplica
+por event_id. AsyncAPI documenta payload/publicador/consumidor. Dois testes de
+publicação/ack e retry passaram; validação real da deduplicação depende de SQL.
