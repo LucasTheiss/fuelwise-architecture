@@ -99,3 +99,11 @@ adicionadas ao legado para validar frota/pendências sem acesso cruzado a bancos
 Testes: dois cenários (domínio e fluxo HTTP) aprovados, legado 38/38. SQL real
 não executado; credenciais e engine ainda indisponíveis. A ponte financeira
 com registros novos continua sendo uma restrição de migração a documentar.
+
+### Fase D — resultado
+
+BFF implementado: proxies com destinos fixos, autenticação no legado, timeout,
+agregação dos dois serviços e chamada HTTP da Function, HTTP 207 em falha parcial.
+Quatro testes passaram. Os indicadores declaram explicitamente amostra de até
+100 registros por serviço. Function real e integração de processos serão
+verificadas nas fases E/I; publicação ainda pendente.
