@@ -42,5 +42,11 @@ jobs:
           printf 'LOCAL_DB_PASSWORD=%s\nLOCAL_SQL_PASSWORD=Fw!%s\nJWT_SECRET=%s\nADMIN_EMAIL=admin@fuelwise.local\nADMIN_PASSWORD=Fw!%s\n' "$secret" "$secret" "$secret" "$secret" > .env.delivery
       - run: docker compose --env-file .env.delivery -f compose.delivery.yaml up -d --build --wait --wait-timeout 300
       - run: node scripts/smoke-delivery.mjs
+      - name: Validate official Azure Functions host locally
+        run: |
+          node scripts/prepare-function-runtime.mjs
+          docker compose --env-file .env.delivery --env-file .env.function-runtime -f compose.delivery.yaml -f compose.functions-runtime.yaml up -d --build --no-deps azurite function bff
+          node scripts/test-function-runtime.mjs
+          node scripts/smoke-delivery.mjs
       - if: always()
-        run: docker compose --env-file .env.delivery -f compose.delivery.yaml down
+        run: docker compose --env-file .env.delivery -f compose.delivery.yaml down --remove-orphans

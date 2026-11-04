@@ -165,3 +165,15 @@ links públicos marcados pendentes, READMEs e screenshots locais reais.
 PDF consolidado de 16 páginas em output/pdf/FuelWise_Delivery3.pdf, renderizado
 e revisado visualmente. Nenhuma publicação externa ou provisionamento realizado.
 A entrega cloud não é declarada concluída; gates e limites em VALIDATION.md.
+
+### Retomada — 04/11/2026, complemento das fases E/I
+
+Git limpo em ddf94a8: a documentação da fase J já havia sido salva no commit WIP.
+Requisitos relidos nos nomes existentes `docs/codex/prompt.md` e `enunciado.md`,
+além do PDF original completo. Nenhuma alteração anterior descartada.
+Adicionado host oficial Azure Functions em Docker, Azurite local e overlay
+opcional, sem modificar o modo padrão de desenvolvimento. Chaves descartáveis
+somente em arquivos ignorados. Validação HTTP: 401 sem chave/incorreta, 200 com
+indicadores reais, 400 em entrada inválida. Smoke completo via BFF passou usando
+esse host. 55 testes isolados/arquiteturais passaram novamente; CI estendido.
+Runtime local comprovado; Core Tools no Windows e deploy Azure não executados.

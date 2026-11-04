@@ -15,5 +15,12 @@ Publicação preparada: `func azure functionapp publish NOME_JA_APROVADO`.
 Não criar Function App/storage sem verificar custo e elegibilidade. Não há URL
 pública nem recurso provisionado. Docker não é obrigatório para esta Function.
 
+No repositório principal, `Dockerfile.runtime` e `compose.functions-runtime.yaml`
+executam o host oficial Node 22 com Azurite local. Gerar chaves descartáveis com
+`node scripts/prepare-function-runtime.mjs`, iniciar com os dois arquivos Compose
+e executar `node scripts/test-function-runtime.mjs`. O teste exige 401 sem chave,
+200 com chave válida e 400 em entradas inválidas. Instruções em
+`docs/DEPLOYMENT.md` do repositório principal. Não equivale a deploy Azure.
+
 Integrantes: Artur Ribeiro de Souza; Cristhian Rezende; Lucas Andriani Theiss;
 Vinicius da Rosa Padilha.
