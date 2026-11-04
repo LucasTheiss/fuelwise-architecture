@@ -18,8 +18,33 @@ Swagger BFF: http://localhost:18080/docs; legado: http://localhost:3000.
 Swagger dos serviços é acessível na rede Docker em stations:3001/docs e
 trips:3002/docs. Para inspeção local, encaminhar uma porta loopback explicitamente.
 Os bancos não expõem portas no host. Health checks dos serviços verificam seus
-bancos. O adaptador Function local é identificado no Dockerfile; usar Core Tools
-para validar o runtime e Azure Functions no vídeo final.
+bancos. O Compose padrão usa o adaptador Function Node; o overlay abaixo executa
+o host oficial. A apresentação final continua exigindo Azure Functions público.
+
+### Host oficial da Function, sem recursos Azure
+
+```powershell
+node scripts/prepare-function-runtime.mjs
+docker compose --env-file .env.delivery --env-file .env.function-runtime -f compose.delivery.yaml -f compose.functions-runtime.yaml up -d --build
+node scripts/test-function-runtime.mjs
+node scripts/smoke-delivery.mjs
+```
+
+O overlay usa a imagem oficial `mcr.microsoft.com/azure-functions/node:4-node22`
+e Azurite como armazenamento emulado local. A porta 7071 aceita somente loopback;
+o BFF envia a chave em header. O teste verifica autenticação do host, resultados
+e entradas inválidas. Os arquivos `.env.function-runtime` e `tmp/function-secrets/`
+são ignorados. Gerar novas chaves exige recriar Function/BFF/Azurite com Compose.
+Não publicar esse overlay: suas configurações são exclusivas de desenvolvimento.
+Core Tools continua disponível como alternativa via `npm start` no projeto da
+Function. Este teste local não comprova gratuidade nem implantação na Azure.
+
+Para inspecionar os Swagger, adicionar `-f compose.inspect.yaml` ao comando
+Compose: http://localhost:13001/docs e http://localhost:13002/docs. Apenas portas
+loopback dos serviços são abertas; o frontend continua usando o gateway.
+Ao parar a variante oficial, usar os mesmos `--env-file` e `-f` com `down`, sem `-v`.
+
+Referência da imagem: [Microsoft - containers Functions](https://learn.microsoft.com/en-us/azure/azure-functions/container-concepts).
 
 O teste smoke cria uma transportadora fictícia aprovada, gerente, motorista,
 veículo, posto/preço e viagem. Verifica CRUD, conflito de viagem ativa, agregação

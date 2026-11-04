@@ -71,7 +71,8 @@ apresentar bancos locais ou mocks como integração Atlas/Azure homologada.
 
 Os itens marcados representam implementação/validação local, não aceite cloud.
 - [ ] Homologação Atlas e Azure SQL reais e elegíveis ao gratuito.
-- [ ] Runtime Azure Functions e custos de storage comprovados.
+- [x] Runtime Azure Functions local comprovado com host oficial e Azurite.
+- [ ] Azure Functions cloud e custos de storage comprovados.
 - [ ] Deploy HTTPS, cinco repositórios e Docker Hub públicos autorizados.
 - [ ] Evidências cloud e vídeo pelos quatro integrantes.
 - [ ] Ponte financeira e migração de banco legado com entidades existentes.

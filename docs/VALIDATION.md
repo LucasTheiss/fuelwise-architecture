@@ -1,4 +1,4 @@
-# Validação executada — 03/11/2026
+# Validação executada — 03 e 04/11/2026
 
 ## Ambiente
 
@@ -41,7 +41,7 @@ de validação local, nem validação local com homologação Atlas/Azure.
 
 ## Pendências que impedem aceite cloud completo
 
-Atlas Free e Azure SQL gratuitos reais; runtime Azure Functions/Core Tools;
+Atlas Free e Azure SQL gratuitos reais; implantação Azure Functions;
 HTTPS público; testes de custo/quotas; publicação dos cinco GitHub e três imagens;
 screenshots cloud; vídeo não listado com os quatro integrantes. CI foi preparado,
 mas não foi executado no GitHub porque não houve push.
@@ -49,3 +49,23 @@ mas não foi executado no GitHub porque não houve push.
 Financeiro/GPS/denúncias de entidades novas não foram migrados: execução original
 é preservada. Corte sobre banco legado preenchido é deliberadamente bloqueado.
 Testes de carga, SLA, recuperação de desastre e auditoria de segurança pendentes.
+
+## Retomada de 04/11/2026
+
+Estado inicial: Git limpo, HEAD ddf94a8 já contendo documentação/PDF/evidências.
+Nenhuma alteração pendente perdida. Requisitos e PDF original relidos.
+
+- Host oficial Azure Functions v4 com Node 22, via Dockerfile.runtime: aprovado.
+- Azurite local fornece storage sem conta Azure; chaves locais não versionadas.
+- HTTP: 401 sem chave e com chave errada; 200 com indicadores; 400 com JSON/status
+  inválidos; null preservado em indisponibilidade parcial.
+- Smoke completo pelo Gateway/BFF consumindo esse host: aprovado.
+- Zod atualizado para 4.6.7 por GHSA-mrhx-c7xc-m3w5 em quatro projetos. npm audit
+  reportou zero vulnerabilidades nesses projetos após a atualização.
+- Regressão: 55 testes passaram; dois testes com banco ignorados no host foram
+  novamente executados com sucesso nos containers Mongo/SQL.
+- Checagem sintática: 180 arquivos, zero erros; imagens reconstruídas com sucesso.
+
+CI preparado para repetir host oficial e smoke; execução remota depende de push.
+Core Tools no Windows não foi executado. O host Docker é runtime real local,
+mas não substitui Atlas, Azure SQL ou Function hospedados exigidos no aceite final.
