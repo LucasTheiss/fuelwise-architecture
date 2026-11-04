@@ -177,3 +177,11 @@ somente em arquivos ignorados. Validação HTTP: 401 sem chave/incorreta, 200 co
 indicadores reais, 400 em entrada inválida. Smoke completo via BFF passou usando
 esse host. 55 testes isolados/arquiteturais passaram novamente; CI estendido.
 Runtime local comprovado; Core Tools no Windows e deploy Azure não executados.
+
+### Correção de dependência — 04/11/2026
+
+O build do host revelou GHSA-mrhx-c7xc-m3w5 em Zod 3. Atualizados legado,
+Postos, Viagens e Function para Zod 4.6.7 com lockfiles. npm audit desses quatro
+projetos: zero vulnerabilidades reportadas no momento da atualização. 55 testes,
+180 arquivos na checagem sintática, integração Mongo/SQL e smoke com host oficial
+aprovados após reconstruir as imagens. Sem alteração das regras de negócio.
