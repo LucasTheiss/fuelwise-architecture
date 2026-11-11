@@ -4,7 +4,9 @@ PUCPR · Engenharia de Software · Arquitetura e Soluções Cloud
 
 Artur Ribeiro de Souza · Cristhian Rezende · Lucas Andriani Theiss · Vinicius da Rosa Padilha
 
-Versão de implementação local, 04/11/2026. Publicação cloud e vídeo pendentes.
+Versão de implementação e publicação de código, 11/11/2026. Os repositórios e
+imagens Docker estão públicos; os serviços ainda não têm URLs de execução cloud.
+O vídeo permanece pendente do grupo.
 Referência: documentação original da Entrega 2 (53 páginas), enunciado e prompt
 da Entrega 3. O código e os resultados registrados em VALIDATION.md prevalecem
 sobre propostas. Não há URL pública inventada; consultar PUBLIC_URLS.md.
@@ -164,14 +166,38 @@ a ponte de concorrência financeira não deve ser considerada homologada.
 Local: Docker Compose isolado, PostgreSQL, Mongo e SQL Server Developer;
 containers independentes dos componentes. Function usa handler com adapter
 Node no Compose padrão; overlay opcional validado com host oficial Node 22,
-chave de função e Azurite local. Deploy Azure é validação separada. Dados persistem em volumes;
-credenciais em arquivo ignorado. Gateway em localhost:18080 e frontend :5173.
+chave de função e Azurite local. Dados persistem em volumes; credenciais em
+arquivo ignorado. Gateway em localhost:18080 e frontend :5173.
 
-Cloud preparado, não provisionado: Static Web Apps Free, Atlas Free, Azure SQL
-gratuito elegível, Function com custos comprovados e serviços Docker em hospedagem
-gratuita revisada. Todas as URLs externas devem usar HTTPS. Ver DEPLOYMENT.md.
+Homologação de dados cloud real: Atlas M0 e `fuelwiseDB` Azure SQL; suites de
+CRUD/outbox e smoke E2E passaram, com limpeza dos registros. O gateway, frontend,
+BFF e serviços ainda não foram hospedados em URL pública. A Azure Function foi
+testada no host local oficial com Azurite; ainda não há Function App cloud. A
+oferta de Function Consumption não comprova custo zero para Storage, e a API
+gerenciada do Static Web Apps tem runtime diferente do Node 22 atual; ver
+CLOUD_COSTS.md antes de escolher. Publicações de código/imagens estão em
+PUBLIC_URLS.md. Todas as futuras URLs de execução devem usar HTTPS.
+
 Cada projeto possui README/package/lockfile; Dockerfiles de BFF/Mongo/SQL usam
 usuário node e health checks. CI executa testes, build frontend e smoke Compose.
+
+### Links da publicação verificada
+
+| Projeto / imagem | URL pública |
+|---|---|
+| Repositório raiz | [FuelWise Architecture](https://github.com/LucasTheiss/fuelwise-architecture/tree/vertical-slice) |
+| Microfrontend | [fuelwise-frontend](https://github.com/CristhianSK/fuelwise-frontend) |
+| BFF | [fuelwise-bff](https://github.com/CristhianSK/fuelwise-bff) |
+| Microservice Mongo | [fuelwise-microservice-mongo](https://github.com/CristhianSK/fuelwise-microservice-mongo) |
+| Microservice SQL | [fuelwise-microservice-sql](https://github.com/CristhianSK/fuelwise-microservice-sql) |
+| Azure Function | [fuelwise-azure-function](https://github.com/CristhianSK/fuelwise-azure-function) |
+| Imagem BFF | [cristhiansk/fuelwise-bff:v1](https://hub.docker.com/r/cristhiansk/fuelwise-bff/tags) |
+| Imagem Mongo | [cristhiansk/fuelwise-mongo-service:v1](https://hub.docker.com/r/cristhiansk/fuelwise-mongo-service/tags) |
+| Imagem SQL | [cristhiansk/fuelwise-sql-service:v1](https://hub.docker.com/r/cristhiansk/fuelwise-sql-service/tags) |
+
+Frontend, gateway, Swagger e Function ainda não têm URLs públicas de execução.
+O AsyncAPI está disponível no repositório em `docs/asyncapi.json`; o vídeo será
+adicionado pelo grupo após a gravação.
 
 ## 8. Conceitos transversais
 
@@ -221,9 +247,11 @@ atestam SLA, capacidade, segurança de produção ou integração cloud.
 
 ## 11. Riscos e débitos técnicos
 
-Publicação pública, Atlas/Azure reais, implantação Function, vídeo e screenshots
-cloud pendentes. Gratuidade da Function/storage exige comprovação. Free hosts
-têm cold start, quotas e suspensão; polling de outbox pode impedir pausa SQL.
+Repositórios/imagens públicos e integrações reais Atlas/Azure foram validados.
+Deploy dos serviços, Function cloud e screenshots cloud seguem pendentes. O
+link do vídeo será preenchido pelo grupo.
+Gratuidade da Function/storage exige comprovação. Free hosts têm cold start,
+quotas e suspensão; polling de outbox pode impedir pausa SQL.
 Rate limit do gateway é por processo. BFF limita dashboard a 100 registros.
 Migração financeira/denúncias/GPS para novas entidades não implementada; operação
 original continua separada. Não há rollback distribuído de pagamentos.
