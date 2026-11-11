@@ -69,8 +69,9 @@ apresentar bancos locais ou mocks como integração Atlas/Azure homologada.
 - [x] I: Compose, builds, CI preparado, testes integrados e preparação Docker Hub.
 - [x] J: ARC42, C4, Canvas, custos, READMEs, evidências locais e roteiro.
 
-Os itens marcados representam implementação/validação local, não aceite cloud.
-- [ ] Homologação Atlas e Azure SQL reais e elegíveis ao gratuito.
+Os itens marcados representam implementação/validação concluída; publicação e
+demonstração pública ainda são critérios separados.
+- [x] Homologação Atlas e Azure SQL reais; usuário confirmou Atlas M0 Free e oferta SQL Free com AutoPause/overage desativado.
 - [x] Runtime Azure Functions local comprovado com host oficial e Azurite.
 - [ ] Azure Functions cloud e custos de storage comprovados.
 - [ ] Deploy HTTPS, cinco repositórios e Docker Hub públicos autorizados.
@@ -82,13 +83,13 @@ provisionamento dependem de credenciais, autorização e confirmação da gratui
 
 ## Riscos e dependências
 
-- Azure for Students pode não ser elegível à oferta SQL gratuita; verificar fontes
-  oficiais e assinatura antes de criar recursos. Não usar créditos sem autorização.
+- Usuário confirmou Azure for Students e aplicação da oferta SQL gratuita; manter
+  AutoPause e cobrança adicional desativada e monitorar os limites no portal.
 - Functions precisa de storage; franquia de execução não garante custo total zero.
 - Preservar RBAC, tenant, precisão monetária e exclusividade sob concorrência.
 - Referências PostgreSQL entre viagens, postos e financeiro exigem migração
   coordenada; não tratar duas cópias mutáveis como fonte de verdade.
-- Validações locais não substituem CRUD real no Atlas/Azure, deploy público e vídeo.
+- CRUD real no Atlas/Azure foi validado; isso não substitui deploy público, Function hospedada e vídeo.
 - Não inventar URLs ou screenshots. Registrar pendências de maneira verificável.
 
 ### Fase B — resultado
@@ -186,3 +187,31 @@ Postos, Viagens e Function para Zod 4.6.7 com lockfiles. npm audit desses quatro
 projetos: zero vulnerabilidades reportadas no momento da atualização. 55 testes,
 180 arquivos na checagem sintática, integração Mongo/SQL e smoke com host oficial
 aprovados após reconstruir as imagens. Sem alteração das regras de negócio.
+
+### Homologação cloud — 11/11/2026
+
+Atlas M0 Free e Azure SQL da oferta Free foram criados pelo usuário. A tela SQL
+confirmou AutoPause e cobrança adicional desativada. Teste real Atlas: 2/2
+(CRUD/RBAC/validação; banco temporário removido). Teste real Azure SQL: 1/1
+(CRUD, concorrência, isolamento por tenant, outbox e idempotência; teardown
+executado). A suíte geral também passou com Docker e acesso loopback habilitados.
+
+Smoke E2E aprovado via Gateway/BFF com os dois bancos reais, Function host oficial
+v4/Node 22 local com Azurite e consumidor de eventos. Cobriu identidade, CRUD de
+postos/preços e viagens/transições, `/aggregated-data`, Function e consumo de
+`TripCreated`. Os registros exatos do smoke nos bancos cloud foram removidos.
+Dentro do container, a conexão de saída ao Azure SQL expirou; o mesmo cenário
+passou com microservices no Windows host. Validar egress/firewall na hospedagem
+futura sem liberar acesso global.
+
+- [x] CRUD e agregação homologados nos bancos cloud reais.
+- [x] Function integrada ao BFF via host oficial local.
+- [ ] Function App pública; depende de custo total Function/Storage/logs
+  comprovadamente zero ou autorização explícita para consumo.
+- [ ] Publicação HTTPS, repositórios/imagens públicos, evidências e vídeo.
+- [ ] Validar egress entre containers e Azure SQL na topologia escolhida.
+- [ ] Ponte financeira e migração do banco legado com entidades existentes.
+
+Nenhum recurso cloud foi provisionado nesta sessão. `VALIDATION.md` e
+`CLOUD_COSTS.md` foram atualizados. `STATUS_HANDOFF.md` permanece local, conforme
+pedido do usuário.
