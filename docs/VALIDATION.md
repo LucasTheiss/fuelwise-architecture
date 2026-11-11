@@ -69,3 +69,27 @@ Nenhuma alteração pendente perdida. Requisitos e PDF original relidos.
 CI preparado para repetir host oficial e smoke; execução remota depende de push.
 Core Tools no Windows não foi executado. O host Docker é runtime real local,
 mas não substitui Atlas, Azure SQL ou Function hospedados exigidos no aceite final.
+
+## Homologação com os bancos cloud — 11/11/2026
+
+- `scripts/validate-all.mjs`: passou com acesso ao Docker/loopback; os testes de
+  banco condicionais foram executados separadamente contra os serviços cloud.
+- MongoDB Atlas M0 real: `tests/crud.test.js` passou 2/2, incluindo CRUD,
+  validação e RBAC com banco temporário exclusivo; o teardown removeu o banco.
+- Azure SQL real: `tests/sql.integration.test.js` passou 1/1, incluindo CRUD,
+  concorrência, isolamento por tenant, outbox e deduplicação; o teardown removeu
+  os registros do teste.
+- Smoke de ponta a ponta passou usando o Gateway e BFF, os microservices ligados
+  aos dois bancos reais, o host oficial Azure Functions v4/Node 22 em Docker com
+  Azurite local e o consumidor de eventos no Azure SQL. O fluxo cobriu identidade,
+  postos/preços, viagens/transições, `/aggregated-data`, Function e `TripCreated`.
+  Os dados exatos do smoke (posto/preço, viagem, auditoria e eventos) foram
+  removidos após a aprovação.
+- A tentativa de executar o microservice SQL dentro do container Docker falhou
+  por timeout de saída até o Azure SQL. O mesmo serviço conectado pelo host
+  Windows passou e o smoke completo passou nesse arranjo. Portanto, a rede de
+  saída entre containers e Azure SQL deve ser validada/ajustada para a topologia
+  de hospedagem escolhida.
+- A stack temporária e os volumes locais dela foram removidos. Nenhum recurso
+  Azure foi criado nesta validação. O teste usa o runtime oficial local, não uma
+  Function App publicada; URL pública e custo de Storage continuam pendentes.
