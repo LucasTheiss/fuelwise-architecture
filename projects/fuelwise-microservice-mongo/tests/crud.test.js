@@ -15,4 +15,4 @@ assert.equal((await call('/'+station.id)).status,200);assert.ok((await(await cal
 assert.equal((await call('/'+station.id,'PUT',{...data,name:'Posto Editado'})).status,200);
 assert.equal((await call('/'+station.id,'DELETE')).status,200);assert.equal((await call('/'+station.id)).status,404);}
 test('CRUD HTTP, validação e RBAC com porta isolada',async t=>crud(t,memory()));
-test('CRUD com MongoDB real (banco exclusivo de teste)',{skip:!process.env.TEST_MONGODB_URI},async t=>{const client=new MongoClient(process.env.TEST_MONGODB_URI);await client.connect();const db=client.db('fuelwise_test_'+randomUUID().replaceAll('-',''));t.after(async()=>{await db.dropDatabase();await client.close();});const repo=mongoRepository(db);await repo.initialize();await crud(t,repo);});
+test('CRUD com MongoDB real (banco exclusivo de teste)',{skip:!process.env.TEST_MONGODB_URI},async t=>{const client=new MongoClient(process.env.TEST_MONGODB_URI);await client.connect();const db=client.db('fw_t_'+randomUUID().replaceAll('-',''));t.after(async()=>{await db.dropDatabase();await client.close();});const repo=mongoRepository(db);await repo.initialize();await crud(t,repo);});

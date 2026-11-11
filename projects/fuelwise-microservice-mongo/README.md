@@ -5,8 +5,9 @@ Zod, driver oficial MongoDB. Features contêm HTTP e caso de uso separados;
 aplicação recebe a porta de repositório; infraestrutura implementa persistência.
 IDs UUID preservam compatibilidade. Desativação mantém histórico de preços.
 
-`npm ci`, configure as variáveis de `.env.example` no ambiente, `npm start`.
-Para carregar um arquivo: `node --env-file=.env src/server.js`.
+`npm ci`, copie `.env.example` para `.env` e preencha a URI do Atlas com usuário
+de banco e senha URL-encoded. Não versione `.env`. Para executar localmente:
+`node --env-file=.env src/server.js`. Em Docker, passe as variáveis no ambiente.
 `npm test` executa testes HTTP isolados; `TEST_MONGODB_URI` habilita teste real
 em banco temporário exclusivo, removido ao final. Nunca use URI de produção
 com privilégio amplo para testes. `/health/ready` verifica MongoDB.

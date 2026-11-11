@@ -6,7 +6,10 @@ isolamento e bloqueio da finalização com abastecimentos pendentes. Edição mu
 somente observações; DELETE desativa viagens finalizadas, preservando auditoria.
 Cancelamento não foi introduzido porque não existe no domínio original.
 
-`npm ci`; configurar `.env.example` no ambiente; `npm run db:migrate`; `npm start`.
+`npm ci`; copie `.env.example` para `.env` e preencha as credenciais localmente.
+Não versione `.env`. Rode a migration com
+`node --env-file=.env scripts/migrate.js` e inicie a API com
+`node --env-file=.env src/server.js`.
 Migration aditiva/idempotente, TLS obrigatório no Azure, pool máximo de três.
 `SQL_LOCAL_DEVELOPMENT=true` aceita certificado local somente fora de produção.
 O serviço nunca acessa PostgreSQL: valida identidade/frota/pendências por HTTP.
