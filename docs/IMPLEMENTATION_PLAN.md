@@ -73,13 +73,22 @@ Os itens marcados representam implementação/validação concluída; publicaç�
 demonstração pública ainda são critérios separados.
 - [x] Homologação Atlas e Azure SQL reais; usuário confirmou Atlas M0 Free e oferta SQL Free com AutoPause/overage desativado.
 - [x] Runtime Azure Functions local comprovado com host oficial e Azurite.
-- [ ] Azure Functions cloud e custos de storage comprovados.
-- [ ] Deploy HTTPS, cinco repositórios e Docker Hub públicos autorizados.
-- [ ] Evidências cloud e vídeo pelos quatro integrantes.
+- [ ] Azure Functions cloud publicada em opção compatível e sem custos; não há
+  Function App criada. O grant de execução do plano Consumption não cobre
+  Storage. Avaliar managed API do Static Web Apps: runtime limitado (Node 18/20
+  preview na documentação consultada), incompatível com Node 22 atual até prova
+  em contrário.
+- [x] Cinco repositórios públicos no GitHub e três imagens v1 no Docker Hub,
+  verificados em 11/11/2026. URLs em `docs/PUBLIC_URLS.md`.
+- [ ] Deploy público HTTPS dos serviços/gateway/frontend; Swagger público e
+  screenshots cloud ainda pendentes.
+- [ ] Vídeo pelos quatro integrantes (fora do escopo automatizado conforme
+  pedido do usuário).
 - [ ] Ponte financeira e migração de banco legado com entidades existentes.
 
-Cada fase terá validação e commit próprio. Publicação GitHub/Docker Hub e
-provisionamento dependem de credenciais, autorização e confirmação da gratuidade.
+Cada fase de implementação deve ter validação e commit próprio. A publicação dos
+repositórios GitHub e imagens Docker Hub já foi concluída. Hosting cloud continua
+dependente de compatibilidade e comprovação de custo zero da configuração completa.
 
 ## Riscos e dependências
 

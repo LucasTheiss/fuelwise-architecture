@@ -69,23 +69,32 @@ conciliar viagens em andamento/abastecimentos, desenhar a ponte financeira com
 controle de concorrência, congelar os escritores antigos e testar recuperação.
 O bloqueio atual evita duas fontes mutáveis de verdade por acidente.
 
-## Cloud, somente após revisão de CLOUD_COSTS.md
+## Cloud — estado e gates antes de publicar
 
-1. Obter Atlas Free e Azure SQL gratuito elegível. Configurar credenciais com
-   privilégio mínimo, IPs de saída e TLS. Executar migrations SQL aditivas.
-2. Publicar os serviços a partir de seus diretórios independentes (Dockerfile ou
-   `npm ci`/`npm start`). Injetar variáveis dos `.env.example` em secret settings.
-3. Hospedar identidade legada com PostgreSQL próprio. Não trocar o banco de
-   viagens por este PostgreSQL. Usar ambiente de demonstração isolado.
-4. Publicar Function em recurso previamente aprovado: `func azure functionapp
-   publish NOME_APROVADO`; configurar FUNCTION_URL HTTPS e FUNCTION_KEY no BFF.
-5. Publicar gateway com terminador TLS confiável, configurar BFF_URL e CORS_ORIGIN.
-   Não divulgar as portas internas nem configurar CORS `*`.
-6. Publicar `dist` frontend em Static Web Apps Free; editar runtime-config.js com
-   URLs reais HTTPS. Remotos separados exigem CORS da hospedagem estática.
-7. Aquecer serviços Free antes da demonstração para lidar com cold start. Não
-   usar pings permanentes que consomem horas/franquias. Parar worker após sessão.
-8. Executar smoke contra URLs reais, comprovar Atlas/Azure e coletar evidências.
+Os cinco repositórios e as três imagens v1 já estão públicos. Os serviços ainda
+não têm URLs de execução HTTPS. Confira `docs/PUBLIC_URLS.md` e
+`docs/CLOUD_COSTS.md` antes de escolher infraestrutura.
+
+1. Não criar planos que consumam créditos Azure, cobrem Storage/logs/rede, ou
+   tenham excedente pago sem autorização. Para `fuelwiseDB`, preservar Free,
+   AutoPause e overage desativado.
+2. O frontend estático pode ser avaliado no Azure Static Web Apps Free. A Function
+   gerenciada desse produto tem runtime limitado; o projeto atual exige Node 22,
+   então a compatibilidade precisa ser resolvida antes de publicar a API.
+3. Azure Functions Consumption possui franquia de execuções em condições
+   específicas, mas Storage e rede têm cobrança separada. Não criar Function App
+   ou Storage sem comprovar custo total zero para esta assinatura.
+4. A API legada ainda depende de PostgreSQL para login, usuários e outros slices.
+   Os serviços novos consultam identidade/frota do legado por HTTP. Não existe
+   endpoint público funcional sem hospedar essa dependência; não tratar o SQL de
+   Viagens como substituto automático do PostgreSQL.
+5. Antes de hospedar BFF, gateway e microservices, comprovar plano gratuito,
+   disponibilidade, egress restrito, TLS, logs e conectividade com Atlas/Azure
+   SQL. Não abrir a firewall SQL para todas as origens.
+6. Quando houver uma topologia aprovada, publicar com secrets do provedor, apontar
+   as variáveis HTTPS e executar o smoke test somente com dados fictícios.
+7. Salvar prints cloud reais em `docs/evidence/cloud/`, atualizar links e
+   regenerar ARC42/PDF após validar cada URL.
 
 ## Docker Hub e cinco repositórios
 

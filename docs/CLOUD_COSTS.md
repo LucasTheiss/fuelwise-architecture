@@ -1,52 +1,45 @@
-# Custos e restrição de provisionamento
+# Custos e limites para a Entrega 3
 
-Consulta às fontes oficiais em 03/11/2026; estado de recursos atualizado em
-11/11/2026. Atlas M0 e Azure SQL foram criados pelo usuário após a revisão das
-ofertas. Créditos Azure for Students não são orçamento autorizado. Uma franquia
-não comprova custo total zero fora dos limites e configurações selecionados.
+Atualizado em 11/11/2026. A existência de um plano ou grant gratuito não implica
+que todos os serviços auxiliares também sejam gratuitos. Não criar recursos nem
+consumir créditos Azure quando o custo total zero não estiver comprovado.
 
-**Recursos existentes confirmados pelo usuário:** cluster MongoDB Atlas M0 com
-selo FREE e estado Active; Azure SQL Database `fuelwiseDB` com oferta gratuita,
-AutoPause ao atingir o limite e cobrança adicional desativada. A tela de revisão
-do banco mostrou $0 para compute/storage. O teste integrado foi encerrado e as
-conexões SQL foram fechadas. Conferir periodicamente a franquia restante no
-portal. Nenhuma Function App, Storage Account dedicada, hospedagem, repositório
-público novo ou serviço pago foi provisionado pelo agente.
+## Recursos existentes
 
-| Componente | Plano/limites consultados | Uso esperado na demonstração | Risco e proteção | Desativação |
-|---|---|---|---|---|
-| Postos | MongoDB Atlas M0 Free, cluster ativo em São Paulo conforme portal mostrado pelo usuário | Testes CRUD reais concluídos; pool 5 | Manter tier M0 e limites de acesso; revisar consumo no Atlas; não adicionar extras pagos | Pausar/encerrar pelo Atlas após exportar dados, mediante decisão do usuário |
-| Viagens | Azure SQL General Purpose serverless na oferta gratuita; o usuário confirmou Free offer, AutoPause e overage desativado no servidor `fuelwise`/banco `fuelwiseDB` | Testes CRUD/eventos reais concluídos; conexões fechadas após os testes | Respeitar 100.000 vCore-s/mês, 32 GB de dados e 32 GB backup da oferta; o portal mostrou armazenamento máximo de 41,6 GB, portanto não preencher além dos 32 GB cobertos. Reconfirmar franquia e AutoPause | Parar aplicações e conexões; manter AutoPause; excluir somente após backup/autorização |
-| Function | Host oficial v4/Node 22 executado localmente em Docker com Azurite | Function participou do smoke ponta a ponta local; nenhuma Function App foi publicada no Azure | Storage/rede não estão automaticamente cobertos pela franquia de execuções. Não provisionar até verificar a assinatura, storage, logs e custo total | Não aplicável à nuvem ainda; avaliar todos os recursos auxiliares antes de publicar |
-| Frontend | Static Web Apps Free: 100 GB banda/assinatura, 0,50 GB storage e 0,25 GB por deploy | Build abaixo de 2 MB; menos de 1 GB transferência | Selecionar Free, sem Standard/Front Door. Limite excedido interrompe site | Excluir app ou desconectar deploy |
-| BFF, serviços, gateway e legado | Candidato: Render Free Web Services, 750 horas/mês compartilhadas no workspace | Cinco processos por 20 horas = cerca de 100 horas | Cold start; banda/build podem gerar excedentes com método de pagamento. Sem cartão e sem upgrade; conferir limites da conta, suspender fora da demonstração | Suspender serviços no painel |
-| Identidade legada | Candidato: Render Free Postgres, 1 GB, expira em 30 dias | Menos de 100 usuários/veículos | Usado somente pelo legado, nunca como substituto de Azure SQL. Backup antes de expirar | Exportar, depois remover com autorização |
-| Eventos | Outbox/auditoria no SQL existente | Poucos eventos por sessão | Polling mantém banco ativo; não executar permanentemente. Sem Service Bus pago | Parar serviço de viagens |
-| Docker Hub/GitHub | Repositórios públicos e imagens preparados, não publicados | Três imagens obrigatórias, cinco projetos | Publicação requer revisão de segredos e autorização; limites da conta precisam ser conferidos | Remover/despublicar apenas com autorização |
+| Recurso | Estado confirmado | Limite/risco | Proteção |
+|---|---|---|---|
+| MongoDB Atlas | M0 Free, cluster ativo em São Paulo conforme tela enviada pelo usuário; CRUD real validado | Restrições de throughput, armazenamento e conexões do tier compartilhado | Manter M0, poucos dados de demonstração, usuário de menor privilégio e IP allowlist |
+| Azure SQL `fuelwiseDB` | Criado pelo usuário na oferta Free do Azure SQL; tela de revisão indicava $0 e oferta de 100.000 vCore-s, 32 GB de dados e 32 GB de backup por mês. Usuário confirmou AutoPause e overage desativado. Teste real concluído. | O uso fora dos limites pode não ser gratuito; `maxSizeBytes` anteriormente observado era 32 GiB, e AutoPause foi configurado para evitar uso depois do limite | Manter AutoPause e overage desativado; conferir portal antes de novo teste; pool SQL limitado; fechar processos; não carregar dados reais |
 
-O enunciado usa “Free 1 DTU”; a oferta atual consultada usa **vCore-segundos**.
-Não selecionar SKU pago para reproduzir o texto antigo. A FAQ distingue Azure
-for Students Starter (incompatível) de outras ofertas estudantis. Confirmar o
-tipo exato da assinatura e a opção gratuita no portal, sem presumir elegibilidade.
+## Recursos ainda não implantados
 
-A documentação de Functions informa que storage e rede são cobrados à parte e
-que franquias têm condições específicas. Portanto a implantação de Function
-permanece **bloqueada por comprovação de custo zero**, mesmo com baixo tráfego.
-O adaptador Node local não satisfaz a demonstração de Azure Functions na nuvem.
+| Recurso | Opção avaliada | Situação e motivo para não provisionar |
+|---|---|---|
+| Frontend | Azure Static Web Apps Free | Plano Free oferece hospedagem estática e TLS automático. Pode ser candidato ao site, mas ainda não foi criado/publicado. Conferir plano Free no portal; não mudar para Standard/Dedicated. |
+| Azure Function | Function HTTP separada em Consumption | O grant citado pela Microsoft (1 milhão de execuções e 400.000 GB-s) aplica-se a planos de consumo em assinaturas elegíveis de pagamento por uso. Storage e rede são cobrados à parte. Não está comprovado que a conta Azure for Students do usuário tenha custo total zero para isso. Nenhuma Function App foi criada. |
+| Function dentro do Static Web Apps | Managed API HTTP do SWA Free | A documentação consultada lista runtime gerenciado Node 18 e Node 20 Preview; o projeto está configurado para Node 22. Há incompatibilidade não resolvida. Não alterar runtime para versão fora de suporte sem teste. Uma Function existente vinculada tem hospedagem/custos próprios. |
+| BFF, serviços e gateway | Nenhum host aprovado | Não há deployment público. Escolher hospedagem exige verificar plano, quotas, egress permitido para Azure SQL/Atlas, TLS, cold start, logs e cobrança excedente. Não foi criado serviço de hospedagem nesta etapa. |
+| Banco legado | Sem hospedagem PostgreSQL escolhida | A API original usa PostgreSQL para autenticação e outros slices. O Azure SQL de Viagens não substitui automaticamente esse banco. Usuário pediu priorizar o Azure SQL existente; não criar Neon nem outro banco cloud. |
 
-## Evidência necessária antes de criar recursos
+## Regras antes de provisionar
 
-1. Tipo da assinatura e tela de elegibilidade da oferta SQL (o usuário confirmou Azure for Students e a oferta Free aplicada).
-2. Confirmar periodicamente que AutoPause/overage-disabled permanecem ativos e que a franquia/storage não foi excedida.
-3. Function/Storage/rede/logs com gratuidade comprovada para a assinatura antes de criar a Function App.
-4. Quotas e método de pagamento dos provedores de hospedagem.
-5. Consentimento separado se qualquer consumo de crédito/cobrança for necessário.
+1. Confirmar no portal o nome e o plano selecionado; revisar a tela **Revisar + criar**.
+2. Não habilitar upgrades, autoscale pago, Application Insights, Log Analytics,
+   Private Link, NAT Gateway, domínios ou serviços de terceiros sem conferir o preço.
+3. No Azure SQL, manter a oferta gratuita, AutoPause e overage desativado. Não
+   abrir firewall globalmente; permitir somente a origem necessária.
+4. Parar aplicações e conexões após testes para deixar o banco pausar.
+5. Se qualquer recurso sair do plano grátis ou consumir créditos, não provisionar
+   sem autorização explícita do usuário.
 
-## Fontes
+## Fontes oficiais consultadas
 
-- [Azure SQL Free FAQ](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier-faq)
-- [Configuração da oferta SQL](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier)
-- [Azure Functions pricing](https://azure.microsoft.com/en-us/pricing/details/functions/)
-- [Static Web Apps pricing](https://azure.microsoft.com/en-us/pricing/details/app-service/static/)
-- [Atlas Free limits](https://www.mongodb.com/docs/atlas/reference/free-shared-limitations/)
-- [Render Free](https://render.com/docs/free)
+- [Azure SQL Database free offer](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier)
+- [Azure SQL free tier FAQ](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier-faq)
+- [Azure Functions pricing — storage is billed separately](https://learn.microsoft.com/en-us/azure/azure-functions/pricing)
+- [Static Web Apps plans](https://learn.microsoft.com/en-us/azure/static-web-apps/plans)
+- [Static Web Apps API runtimes and constraints](https://learn.microsoft.com/en-us/azure/static-web-apps/apis-functions)
+- [MongoDB Atlas M0 restrictions](https://www.mongodb.com/docs/atlas/reference/free-shared-limitations/)
+
+Confirmações de custo e status do recurso são da data registrada e devem ser
+conferidas novamente no portal antes de criar ou publicar recursos.

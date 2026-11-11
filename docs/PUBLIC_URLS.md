@@ -11,11 +11,11 @@
 | Docker Hub BFF | https://hub.docker.com/r/cristhiansk/fuelwise-bff/tags (v1) |
 | Docker Hub Mongo | https://hub.docker.com/r/cristhiansk/fuelwise-mongo-service/tags (v1) |
 | Docker Hub SQL | https://hub.docker.com/r/cristhiansk/fuelwise-sql-service/tags (v1) |
-| Frontend / Gateway HTTPS | Pendente |
-| Swagger BFF / Mongo / SQL | Pendente |
-| Function HTTP | Pendente de comprovação de custos e deploy |
+| Frontend / Gateway HTTPS | Pendente de hospedagem sem custo comprovado |
+| Swagger BFF / Mongo / SQL | Pendente de deploy público dos serviços |
+| Function HTTP | Código/runtime local concluídos; Function cloud pendente de custo e compatibilidade |
 | AsyncAPI | Local: docs/asyncapi.json; URL pública pendente |
-| YouTube não listado | Pendente de gravação pelos quatro integrantes |
+| YouTube não listado | Vídeo excluído do trabalho automatizado a pedido do usuário; grupo grava e inclui o link |
 
 Publicação verificada em 11/11/2026 por consultas anônimas às APIs do GitHub e
 Docker Hub: cinco repositórios públicos em main e três tags v1 públicas/ativas.
