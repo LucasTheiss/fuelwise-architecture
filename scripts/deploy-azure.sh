@@ -5,7 +5,7 @@
 #   - the microfrontend (nginx) in the same environment. Static Web Apps is not offered in the regions the
 #     Azure for Students policy allows (brazilsouth, chilecentral, canadacentral, mexicocentral, northcentralus).
 # Idempotent: rerun to update. Secrets come from the ignored .env.cloud; generated ones are appended there.
-# Usage (Git Bash): bash scripts/deploy-azure.sh [all|frontend|firewall|urls]
+# Usage (Git Bash): bash scripts/deploy-azure.sh [all|hold|release|allow-egress|frontend|firewall|urls]
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -316,6 +316,33 @@ EOF
   deploy_app frontend "$f"
 }
 
+# Express environments rotate egress IPs whenever a replica starts. For a recording session, "hold" keeps
+# one replica per app (no restarts: stable IP, no cold start, legacy demo data survives) and allowlists the
+# current egress IP (/32) on Azure SQL and, when ATLAS_PROJECT_ID and the Atlas CLI are available, on Atlas.
+# Always run "release" afterwards: held replicas consume the monthly free grant (~25 h for all seven apps).
+APPS="frontend gateway bff stations trips function legacy"
+ATLAS=${ATLAS:-atlas}
+command -v "$ATLAS" >/dev/null 2>&1 || ATLAS="/c/Program Files (x86)/MongoDB Atlas CLI/atlas.exe"
+allow_egress() {
+  local app ip
+  for app in stations trips; do
+    ip=$("$AZ" containerapp logs show -n "$app" -g "$RG" --tail 300 --format text 2>/dev/null \
+      | grep -oE 'egress-ip=[0-9.]+' | tail -1 | cut -d= -f2)
+    [ -n "$ip" ] || { echo "$app: egress IP not logged yet" >&2; continue; }
+    az_retry sql server firewall-rule create -g "$RG" -s "$SQL_SERVER_NAME" -n "aca-egress-${ip//./-}" \
+      --start-ip-address "$ip" --end-ip-address "$ip" >/dev/null
+    if [ -n "${ATLAS_PROJECT_ID:-}" ]; then
+      "$ATLAS" accessLists create "$ip/32" --type cidrBlock --comment "Azure Container Apps egress" \
+        --projectId "$ATLAS_PROJECT_ID" >/dev/null 2>&1 || echo "Atlas: add $ip/32 manually" >&2
+    fi
+    echo "$app egress $ip allowed (SQL${ATLAS_PROJECT_ID:+ + Atlas})"
+  done
+}
+set_min_replicas() {
+  local app
+  for app in $APPS; do az_retry containerapp update -n "$app" -g "$RG" --min-replicas "$1" -o none; done
+}
+
 print_urls() {
   cat > tmp/cloud-urls.json <<EOF
 {"frontend":"$FRONTEND_ORIGIN","gateway":"$GATEWAY_URL","bffSwagger":"$GATEWAY_URL/docs","stationsSwagger":"$STATIONS_URL/docs","tripsSwagger":"$TRIPS_URL/docs","function":"$FUNCTION_BASE/api/indicators","legacy":"$LEGACY_URL"}
@@ -326,6 +353,9 @@ EOF
 ensure_env
 case "$STEP" in
   firewall) open_sql_firewall ;;
+  hold) set_min_replicas 1; echo "waiting 90 s for replicas to start..."; sleep 90; allow_egress ;;
+  release) set_min_replicas 0 ;;
+  allow-egress) allow_egress ;;
   frontend) deploy_frontend ;;
   urls) ;;
   stations|legacy|trips|function|bff|gateway) "deploy_$STEP" ;;

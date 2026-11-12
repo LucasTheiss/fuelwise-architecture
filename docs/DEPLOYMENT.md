@@ -113,6 +113,9 @@ Operação:
   e contas/transportadoras são recriadas vazias (o admin é recriado no start).
   Antes de gravar: `ADMIN_EMAIL=... ADMIN_PASSWORD=... GATEWAY_URL=https://gateway.<domínio>
   LEGACY_URL=https://legacy.<domínio> node scripts/seed-demo.mjs` (imprime o login do gerente demo).
+- Sessão de gravação: `bash scripts/deploy-azure.sh hold` (1 réplica fixa por app: IP de saída
+  estável, sem cold start, dados do legado preservados; libera o IP atual no SQL e no Atlas via
+  `ATLAS_PROJECT_ID`) e, ao terminar, `bash scripts/deploy-azure.sh release`.
 - Logs sem Log Analytics: `az containerapp logs show -n <app> -g Fuelwise --tail 50 --format text`.
 - Nunca abrir a firewall do SQL para 0.0.0.0–255.255.255.255 nem o Atlas para 0.0.0.0/0.
 
