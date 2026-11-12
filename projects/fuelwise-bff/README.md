@@ -12,8 +12,12 @@ CRUD `/api/v1/stations`, `/api/v1/trips`; cadastros `/drivers` e `/vehicles` no
 legado. Swagger `/docs`, especificação `/openapi.json`, health `/health/live`.
 
 Docker: `docker build -t fuelwise-bff:v1 .`, porta 3003. Publicar atrás do gateway,
-configurar LEGACY_URL, STATIONS_URL, TRIPS_URL, FUNCTION_URL e FUNCTION_KEY.
-Nenhuma URL pública disponível; publicação e custos ainda precisam de validação.
+configurar LEGACY_URL, STATIONS_URL, TRIPS_URL, FUNCTION_URL, FUNCTION_KEY e,
+opcionalmente, HTTP_TIMEOUT_MS (padrão 5000; 10000 na cloud por causa de cold start).
+Cloud: Swagger em https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs e agregação em
+https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/aggregated-data (via API Gateway, Bearer).
+Deploy cloud: Azure Container Apps (`scripts/deploy-azure.sh` no repositório
+principal); URLs em `docs/PUBLIC_URLS.md`.
 
 Integrantes: Artur Ribeiro de Souza; Cristhian Rezende; Lucas Andriani Theiss;
 Vinicius da Rosa Padilha.

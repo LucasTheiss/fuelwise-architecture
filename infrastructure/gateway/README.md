@@ -7,7 +7,7 @@ PowerShell: definir variáveis com `$env:`. Porta 8080. Limite 120/min/IP e
 
 Produção exige TLS_CERT_FILE/TLS_KEY_FILE ou TLS_TERMINATED_UPSTREAM=true
 somente atrás de terminador HTTPS confiável. Não exponha o HTTP diretamente.
-Não confiar em X-Forwarded-For do cliente. Atrás de proxy, configurar trust proxy
+Não confiar em X-Forwarded-For do cliente. Atrás de proxy, definir TRUST_PROXY_HOPS (Azure Container Apps: 1)
 para a topologia real antes da publicação; default conservador pode limitar
 todos os clientes pelo IP do proxy. Uma instância; rate limit em memória.
 Não existe URL pública provisionada. Nenhum serviço pago é necessário ao código.

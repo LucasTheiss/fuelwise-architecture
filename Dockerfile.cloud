@@ -1,0 +1,13 @@
+# Cloud demo image: legacy API + ephemeral PostgreSQL in one container.
+# Azure Container Apps express environments reject sidecars; data resets on restart/scale-to-zero.
+FROM node:22-alpine
+RUN apk add --no-cache postgresql16 postgresql16-contrib su-exec
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY database ./database
+COPY scripts ./scripts
+COPY src ./src
+RUN mkdir -p /var/lib/postgresql/data /run/postgresql && chown -R postgres:postgres /var/lib/postgresql /run/postgresql
+EXPOSE 3000
+CMD ["sh", "scripts/cloud-entrypoint.sh"]
