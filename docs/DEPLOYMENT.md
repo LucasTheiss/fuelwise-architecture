@@ -111,7 +111,8 @@ Operação:
   e `atlas accessLists create X/32 --projectId <id> --comment "Azure Container Apps egress"`.
 - O PostgreSQL do legado é efêmero: após 30 min sem tráfego, o app escala a zero
   e contas/transportadoras são recriadas vazias (o admin é recriado no start).
-  Rodar o smoke ou recriar os dados antes de gravar o vídeo.
+  Antes de gravar: `ADMIN_EMAIL=... ADMIN_PASSWORD=... GATEWAY_URL=https://gateway.<domínio>
+  LEGACY_URL=https://legacy.<domínio> node scripts/seed-demo.mjs` (imprime o login do gerente demo).
 - Logs sem Log Analytics: `az containerapp logs show -n <app> -g Fuelwise --tail 50 --format text`.
 - Nunca abrir a firewall do SQL para 0.0.0.0–255.255.255.255 nem o Atlas para 0.0.0.0/0.
 
