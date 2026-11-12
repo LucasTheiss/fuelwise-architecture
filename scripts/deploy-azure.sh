@@ -24,7 +24,8 @@ trap 'rm -f "$WORK"/*.yaml' EXIT       # YAML files carry secrets; never keep th
 # Read KEY=VALUE without shell evaluation (values contain & ! ?).
 [ -f .env.cloud ] || { echo "Missing .env.cloud" >&2; exit 1; }
 while IFS= read -r line || [ -n "$line" ]; do
-  case "$line" in ''|\#*) continue ;; esac
+  line=${line%$'\r'}
+  [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] || { [ -z "$line" ] || [[ "$line" == \#* ]] || echo "Ignoring invalid line in .env.cloud" >&2; continue; }
   export "${line%%=*}=${line#*=}"
 done < .env.cloud
 for key in MONGODB_URI AZURE_SQL_SERVER AZURE_SQL_DATABASE AZURE_SQL_USER AZURE_SQL_PASSWORD DOCKERHUB_USER; do

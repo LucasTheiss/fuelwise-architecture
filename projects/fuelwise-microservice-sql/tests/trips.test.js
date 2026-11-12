@@ -10,3 +10,9 @@ test('CRUD HTTP viagem e bloqueio financeiro',async t=>{const rows=new Map();let
 const server=createApp({repository,authenticate:async()=>actor,fleet:{validateAssignment:async()=>{},hasPending:async()=>pending}}).listen(0);await new Promise(r=>server.once('listening',r));t.after(()=>new Promise(r=>server.close(r)));const base=`http://127.0.0.1:${server.address().port}/api/v1/trips`;const call=(p='',m='GET',b)=>fetch(base+p,{method:m,headers:{'content-type':'application/json'},...(b?{body:JSON.stringify(b)}:{})});
 assert.equal((await call('','POST',{})).status,400);const response=await call('','POST',{driverId:randomUUID(),vehicleId:randomUUID()});assert.equal(response.status,201);const {trip}=await response.json();assert.equal((await call('/'+trip.id)).status,200);assert.equal((await(await call()).json()).items.length,1);assert.equal((await call('/'+trip.id,'PUT',{notes:'Destino atualizado'})).status,200);assert.equal((await call('/'+trip.id,'DELETE')).status,409);pending=true;assert.equal((await call('/'+trip.id+'/finish','PATCH')).status,409);pending=false;assert.equal((await call('/'+trip.id+'/finish','PATCH')).status,200);assert.equal((await call('/'+trip.id,'DELETE')).status,200);assert.equal((await call('/'+trip.id)).status,404);
 });
+test('índice único de viagem ativa vira 409 sem expor texto do SQL Server',async()=>{
+  const {errors}=await import('../src/api/http.js');let sent;
+  const r={headersSent:false,status(c){sent={status:c};return this;},json(b){sent.body=b;}};
+  errors(Object.assign(Error("Cannot insert duplicate key row in object 'dbo.trip' with unique index 'uq_active_trip_driver'"),{number:2601}),{},r,()=>{});
+  assert.equal(sent.status,409);assert.equal(sent.body.error.message,'Motorista ou veículo já possui viagem em andamento');
+});
