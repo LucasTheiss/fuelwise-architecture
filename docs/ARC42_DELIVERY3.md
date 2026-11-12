@@ -179,6 +179,25 @@ URL pública do gateway passou: identidade, CRUD de postos/preços, CRUD e
 finalização de viagens, viagem ativa única, agregação com Function e evento
 consumido. Prints em `docs/evidence/cloud/`.
 
+```mermaid
+flowchart LR
+  User[Navegador] -->|HTTPS| FE[frontend<br/>nginx + ES modules]
+  User -->|HTTPS| GW[gateway]
+  subgraph ACA[Azure Container Apps fuelwise-env - Brazil South - Consumption]
+    FE
+    GW -->|HTTPS| BFF[bff<br/>ingress interno]
+    BFF --> ST[stations]
+    BFF --> TR[trips + worker outbox]
+    BFF -->|x-functions-key| FN[function<br/>host Azure Functions Node 22]
+    BFF --> LG[legacy<br/>API + PostgreSQL efêmero]
+    ST -->|identidade| LG
+    TR -->|identidade/frota| LG
+  end
+  ST -->|TLS, IP /32| ATLAS[(MongoDB Atlas M0)]
+  TR -->|TLS, IP /32| SQL[(Azure SQL fuelwiseDB Free)]
+  HUB[Docker Hub cristhiansk/*] -.->|imagens por digest| ACA
+```
+
 Custo zero: Container Apps usa o grant mensal do plano Consumption. A Function
 roda no host oficial com chaves em arquivo, sem Storage Account. Static Web Apps
 não está disponível nas regiões permitidas pela assinatura Azure for Students,
