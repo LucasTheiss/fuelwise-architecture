@@ -268,7 +268,7 @@ deploy_gateway() {
         resources: {cpu: 0.25, memory: 0.5Gi}
         env:
           - {name: BFF_URL, value: $BFF_URL}
-          - {name: CORS_ORIGIN, value: $FRONTEND_ORIGIN}
+          - {name: CORS_ORIGIN, value: $(yaml_quote "$FRONTEND_ORIGIN,$GATEWAY_URL")}
           - {name: NODE_ENV, value: production}
           - {name: TLS_TERMINATED_UPSTREAM, value: 'true'}
           - {name: TRUST_PROXY_HOPS, value: '1'}
