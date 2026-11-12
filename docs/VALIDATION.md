@@ -123,3 +123,12 @@ sidecars e volumes de secret e não publica IPs de saída fixos. Os IPs
 `20.206.106.252`, `20.226.18.13` e `20.206.93.129` foram observados e liberados (/32)
 no SQL e no Atlas. Stations e trips registram `egress-ip=...` no start; um IP novo
 exige nova regra. O BFF tem ingress interno, mas o FQDN responde pela internet.
+
+### IP de saída com réplicas fixas — 12/11/2026
+
+Com `bash scripts/deploy-azure.sh hold` (1 réplica por app), stations e trips
+responderam `/health/ready` (consulta real ao Atlas e ao Azure SQL) 30 vezes em
+30 minutos, todas 200, sem reinício e com o mesmo IP de saída (`20.206.93.129`).
+As trocas de IP observadas antes coincidiram com reinícios (deploy ou volta do
+scale-to-zero), não com o passar do tempo. A Azure não documenta garantia de IP
+fixo em ambientes express; o teste cobre 30 min.
