@@ -11,15 +11,26 @@ consumir créditos Azure quando o custo total zero não estiver comprovado.
 | MongoDB Atlas | M0 Free, cluster ativo em São Paulo conforme tela enviada pelo usuário; CRUD real validado | Restrições de throughput, armazenamento e conexões do tier compartilhado | Manter M0, poucos dados de demonstração, usuário de menor privilégio e IP allowlist |
 | Azure SQL `fuelwiseDB` | Criado pelo usuário na oferta Free do Azure SQL; tela de revisão indicava $0 e oferta de 100.000 vCore-s, 32 GB de dados e 32 GB de backup por mês. Usuário confirmou AutoPause e overage desativado. Teste real concluído. | O uso fora dos limites pode não ser gratuito; `maxSizeBytes` anteriormente observado era 32 GiB, e AutoPause foi configurado para evitar uso depois do limite | Manter AutoPause e overage desativado; conferir portal antes de novo teste; pool SQL limitado; fechar processos; não carregar dados reais |
 
-## Recursos ainda não implantados
+## Recursos implantados em 12/11/2026
 
-| Recurso | Opção avaliada | Situação e motivo para não provisionar |
+| Recurso | Configuração | Por que é gratuito / proteção |
 |---|---|---|
-| Frontend | Azure Static Web Apps Free | Plano Free oferece hospedagem estática e TLS automático. Pode ser candidato ao site, mas ainda não foi criado/publicado. Conferir plano Free no portal; não mudar para Standard/Dedicated. |
-| Azure Function | Function HTTP separada em Consumption | O grant citado pela Microsoft (1 milhão de execuções e 400.000 GB-s) aplica-se a planos de consumo em assinaturas elegíveis de pagamento por uso. Storage e rede são cobrados à parte. Não está comprovado que a conta Azure for Students do usuário tenha custo total zero para isso. Nenhuma Function App foi criada. |
-| Function dentro do Static Web Apps | Managed API HTTP do SWA Free | A documentação consultada lista runtime gerenciado Node 18 e Node 20 Preview; o projeto está configurado para Node 22. Há incompatibilidade não resolvida. Não alterar runtime para versão fora de suporte sem teste. Uma Function existente vinculada tem hospedagem/custos próprios. |
-| BFF, serviços e gateway | Nenhum host aprovado | Não há deployment público. Escolher hospedagem exige verificar plano, quotas, egress permitido para Azure SQL/Atlas, TLS, cold start, logs e cobrança excedente. Não foi criado serviço de hospedagem nesta etapa. |
-| Banco legado | Sem hospedagem PostgreSQL escolhida | A API original usa PostgreSQL para autenticação e outros slices. O Azure SQL de Viagens não substitui automaticamente esse banco. Usuário pediu priorizar o Azure SQL existente; não criar Neon nem outro banco cloud. |
+| Ambiente Container Apps `fuelwise-env` | Brazil South, perfil Consumption, sem Log Analytics (`--logs-destination none`) | Plano Consumption tem grant mensal de vCPU-s, GiB-s e requisições; ambiente sem workspace de logs não gera cobrança de ingestão |
+| Apps frontend, gateway, bff, stations, trips, function, legacy | 0,25 vCPU/0,5 GiB (legacy 0,5/1 GiB), `minReplicas: 0`, `maxReplicas: 1` | Scale-to-zero: só consome grant durante uso. Legacy espera 30 min antes de escalar a zero; demais, 5 min |
+| Azure Function (app `function`) | Host oficial Azure Functions Node 22 em container, chaves em arquivo | Sem Function App, Storage Account ou plano de Functions; usa o mesmo grant do Container Apps |
+| Imagens | Docker Hub público `cristhiansk/*`, fixadas por digest | Sem Azure Container Registry |
+| Firewall Azure SQL / Atlas | Regras /32 só para IPs de saída observados | Nada aberto para a internet nem para "todos os serviços Azure" |
+
+Não implantados por indisponibilidade ou custo: Static Web Apps (não oferecido
+nas regiões permitidas pela policy da assinatura Students: brazilsouth,
+chilecentral, canadacentral, mexicocentral, northcentralus), Function App
+Consumption/Flex (exige Storage Account cobrado à parte) e PostgreSQL gerenciado
+(o legado usa PostgreSQL efêmero dentro do container, por decisão do grupo).
+
+Orçamento do grant (180.000 vCPU-s e 360.000 GiB-s/mês, conferir na página de
+billing): cerca de 25 h/mês com os sete apps ativos ao mesmo tempo (2 vCPU, 4 GiB). O Azure SQL Free (100.000 vCore-s/mês) dá cerca de 55 h ativas com
+0,5 vCore; cada retomada consome no mínimo o AutoPause de 60 min. Parar a demo e
+não deixar abas fazendo polling permite que trips escale a zero e o banco pause.
 
 ## Regras antes de provisionar
 
@@ -33,6 +44,8 @@ consumir créditos Azure quando o custo total zero não estiver comprovado.
    sem autorização explícita do usuário.
 
 ## Fontes oficiais consultadas
+
+- [Azure Container Apps billing — free grant](https://learn.microsoft.com/en-us/azure/container-apps/billing)
 
 - [Azure SQL Database free offer](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier)
 - [Azure SQL free tier FAQ](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier-faq)

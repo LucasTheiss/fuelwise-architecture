@@ -69,32 +69,51 @@ conciliar viagens em andamento/abastecimentos, desenhar a ponte financeira com
 controle de concorrência, congelar os escritores antigos e testar recuperação.
 O bloqueio atual evita duas fontes mutáveis de verdade por acidente.
 
-## Cloud — estado e gates antes de publicar
+## Cloud — Azure Container Apps (publicado em 12/11/2026)
 
-Os cinco repositórios e as três imagens v1 já estão públicos. Os serviços ainda
-não têm URLs de execução HTTPS. Confira `docs/PUBLIC_URLS.md` e
-`docs/CLOUD_COSTS.md` antes de escolher infraestrutura.
+URLs em `docs/PUBLIC_URLS.md`; custos e limites em `docs/CLOUD_COSTS.md`.
 
-1. Não criar planos que consumam créditos Azure, cobrem Storage/logs/rede, ou
-   tenham excedente pago sem autorização. Para `fuelwiseDB`, preservar Free,
-   AutoPause e overage desativado.
-2. O frontend estático pode ser avaliado no Azure Static Web Apps Free. A Function
-   gerenciada desse produto tem runtime limitado; o projeto atual exige Node 22,
-   então a compatibilidade precisa ser resolvida antes de publicar a API.
-3. Azure Functions Consumption possui franquia de execuções em condições
-   específicas, mas Storage e rede têm cobrança separada. Não criar Function App
-   ou Storage sem comprovar custo total zero para esta assinatura.
-4. A API legada ainda depende de PostgreSQL para login, usuários e outros slices.
-   Os serviços novos consultam identidade/frota do legado por HTTP. Não existe
-   endpoint público funcional sem hospedar essa dependência; não tratar o SQL de
-   Viagens como substituto automático do PostgreSQL.
-5. Antes de hospedar BFF, gateway e microservices, comprovar plano gratuito,
-   disponibilidade, egress restrito, TLS, logs e conectividade com Atlas/Azure
-   SQL. Não abrir a firewall SQL para todas as origens.
-6. Quando houver uma topologia aprovada, publicar com secrets do provedor, apontar
-   as variáveis HTTPS e executar o smoke test somente com dados fictícios.
-7. Salvar prints cloud reais em `docs/evidence/cloud/`, atualizar links e
-   regenerar ARC42/PDF após validar cada URL.
+Pré-requisitos (Git Bash no Windows ou Bash no Linux/macOS): Azure CLI logado na
+assinatura `Azure for Students`, Node, OpenSSL e curl. Se `az login` travar no
+seletor de contas do Windows, usar `az config set core.enable_broker_on_windows=false`
+e `az login --use-device-code`. Em redes onde IPv6 reseta conexões com a
+Microsoft, preferir IPv4 (PowerShell como administrador):
+`netsh interface ipv6 set prefixpolicy ::ffff:0:0/96 100 4`.
+
+1. Copiar segredos para `.env.cloud` (ignorado pelo Git): `MONGODB_URI`,
+   `MONGODB_DATABASE`, `AZURE_SQL_SERVER`, `AZURE_SQL_DATABASE`,
+   `AZURE_SQL_USER`, `AZURE_SQL_PASSWORD`, `DOCKERHUB_USER`. O script gera e
+   acrescenta `JWT_SECRET`, `LEGACY_DB_PASSWORD`, `ADMIN_EMAIL`,
+   `ADMIN_PASSWORD`, `FUNCTION_KEY` e `FUNCTION_MASTER_KEY`.
+2. Publicar imagens (o deploy usa o digest que o Docker Hub serve para a tag):
+   `powershell -File scripts/docker-images.ps1 -DockerHubUser cristhiansk -Push`.
+3. Implantar tudo: `bash scripts/deploy-azure.sh all`. Também aceita um app
+   (`stations|legacy|trips|function|bff|gateway|frontend`), `firewall` ou `urls`.
+4. Smoke público (dados fictícios):
+
+```bash
+D=redhill-64ef7229.brazilsouth.azurecontainerapps.io
+ADMIN_EMAIL=... ADMIN_PASSWORD=... SMOKE_GATEWAY_URL=https://gateway.$D SMOKE_LEGACY_URL=https://legacy.$D node scripts/smoke-delivery.mjs
+```
+
+Topologia: `frontend` (nginx, `runtime-config.js` gerado no start a partir de
+`GATEWAY_URL`) → `gateway` (`TLS_TERMINATED_UPSTREAM=true`,
+`TRUST_PROXY_HOPS=1`) → `bff` (ingress interno) → `stations` (Atlas),
+`trips` (Azure SQL, migração idempotente no start), `function` (host oficial,
+chaves gravadas de secret em `/home/site/secrets`) e `legacy`
+(`Dockerfile.cloud`: API + PostgreSQL efêmero em 127.0.0.1).
+
+Operação:
+- O ambiente é do tipo express: sem sidecars, sem volumes de secret e com IP de
+  saída rotativo. Stations e trips imprimem `egress-ip=X` no start. Se o trips registrar `Client with IP address 'X' is not allowed`,
+  ou o stations falhar com `ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR`, liberar só `X/32`:
+  `az sql server firewall-rule create -g Fuelwise -s fuelwise -n aca-egress-N --start-ip-address X --end-ip-address X`
+  e `atlas accessLists create X/32 --projectId <id> --comment "Azure Container Apps egress"`.
+- O PostgreSQL do legado é efêmero: após 30 min sem tráfego, o app escala a zero
+  e contas/transportadoras são recriadas vazias (o admin é recriado no start).
+  Rodar o smoke ou recriar os dados antes de gravar o vídeo.
+- Logs sem Log Analytics: `az containerapp logs show -n <app> -g Fuelwise --tail 50 --format text`.
+- Nunca abrir a firewall do SQL para 0.0.0.0–255.255.255.255 nem o Atlas para 0.0.0.0/0.
 
 ## Docker Hub e cinco repositórios
 

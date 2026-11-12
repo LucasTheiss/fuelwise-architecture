@@ -19,8 +19,10 @@ Não há credencial ou perfil confiado ao navegador além do Bearer.
 
 Docker: `docker build -t fuelwise-mongo:v1 .`; porta 3001. Injetar MONGODB_URI,
 MONGODB_DATABASE e LEGACY_URL em runtime. Usar Atlas Free na demonstração;
-Mongo local é apenas desenvolvimento. Deploy público pendente de credenciais e
-verificação de custos. Nenhuma URL pública criada.
+Mongo local é apenas desenvolvimento. Cloud: Swagger em
+https://stations.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs, conectado ao MongoDB Atlas M0.
+Deploy cloud: Azure Container Apps (`scripts/deploy-azure.sh` no repositório
+principal); URLs em `docs/PUBLIC_URLS.md`.
 
 Integrantes: Artur Ribeiro de Souza; Cristhian Rezende; Lucas Andriani Theiss;
 Vinicius da Rosa Padilha.

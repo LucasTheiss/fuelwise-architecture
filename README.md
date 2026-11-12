@@ -14,8 +14,9 @@ O backend original abaixo continua disponível, sem migração destrutiva.
 - [Roteiro de demonstração](docs/DEMO_SCRIPT.md)
 
 `compose.delivery.yaml` usa volumes próprios. Frontend local em
-http://localhost:5173 e gateway em http://localhost:18080. A demonstração cloud,
-Atlas/Azure reais e publicação pública ainda dependem dos gates documentados.
+http://localhost:5173 e gateway em http://localhost:18080. Cloud (Azure Container
+Apps com Atlas e Azure SQL reais): https://frontend.redhill-64ef7229.brazilsouth.azurecontainerapps.io;
+demais URLs em [docs/PUBLIC_URLS.md](docs/PUBLIC_URLS.md), deploy em `scripts/deploy-azure.sh`.
 O financeiro distribuído e a migração de dados existentes não estão concluídos.
 
 Backend REST em **Node.js 22 (JavaScript ESM)**, Express, Zod e PostgreSQL 16, derivado dos 16 requisitos funcionais do PDF de arquitetura e do modelo de domínio fornecidos. Nomes de diretórios, arquivos, endpoints, entidades, tabelas, colunas e enums estão em **inglês**. Na aplicação JavaScript, payloads usam `camelCase`; no PostgreSQL, colunas usam `snake_case`. Documentação funcional permanece em português.

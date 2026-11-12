@@ -93,3 +93,33 @@ mas não substitui Atlas, Azure SQL ou Function hospedados exigidos no aceite fi
 - A stack temporária e os volumes locais dela foram removidos. Nenhum recurso
   Azure foi criado nesta validação. O teste usa o runtime oficial local, não uma
   Function App publicada; URL pública e custo de Storage continuam pendentes.
+
+## Implantação cloud — 12/11/2026
+
+Ambiente Azure Container Apps `fuelwise-env` (Brazil South, Consumption, sem
+Log Analytics), criado por `scripts/deploy-azure.sh` na assinatura Azure for
+Students. Recursos novos: somente o ambiente e sete container apps; nenhum
+Storage Account, ACR, Static Web App ou workspace de logs.
+
+- Host oficial Azure Functions (`mcr.microsoft.com/azure-functions/node:4-node22`)
+  validado localmente sem `AzureWebJobsStorage`: 401 sem chave, 400 para entrada
+  inválida, 200 com o cálculo esperado. Na cloud: 401 sem chave e 200 com chave.
+- Imagem `fuelwise-legacy-cloud` (API + PostgreSQL 16 efêmero) testada
+  localmente com `/run` vazio e 1 MB de `/dev/shm`, simulando o sandbox do
+  Container Apps: migrações, seed do admin e login passaram.
+- `node scripts/smoke-delivery.mjs` com `SMOKE_GATEWAY_URL` e
+  `SMOKE_LEGACY_URL` apontando para as URLs públicas: `result: PASS` (identidade,
+  CRUD/preços de postos no Atlas, CRUD/finalização de viagens no Azure SQL,
+  viagem ativa única 409, gateway+BFF+Function sem degradação, `TripCreated`
+  consumido).
+- A primeira execução falhou: 503 no trips (IP de saída novo bloqueado pela
+  firewall do SQL) e depois `/aggregated-data` degradado (cold start acima do
+  timeout de 5 s do BFF). Depois da regra /32 e com os apps aquecidos, passou.
+- Prints reais das URLs públicas em `docs/evidence/cloud/` (Swagger BFF, Mongo,
+  SQL, gateway, dashboard, postos, viagens), com dados fictícios.
+
+Limitações observadas: o ambiente criado é do tipo express, que rejeita
+sidecars e volumes de secret e não publica IPs de saída fixos. Os IPs
+`20.206.106.252`, `20.226.18.13` e `20.206.93.129` foram observados e liberados (/32)
+no SQL e no Atlas. Stations e trips registram `egress-ip=...` no start; um IP novo
+exige nova regra. O BFF tem ingress interno, mas o FQDN responde pela internet.

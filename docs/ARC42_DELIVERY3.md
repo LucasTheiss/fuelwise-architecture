@@ -4,9 +4,9 @@ PUCPR · Engenharia de Software · Arquitetura e Soluções Cloud
 
 Artur Ribeiro de Souza · Cristhian Rezende · Lucas Andriani Theiss · Vinicius da Rosa Padilha
 
-Versão de implementação e publicação de código, 11/11/2026. Os repositórios e
-imagens Docker estão públicos; os serviços ainda não têm URLs de execução cloud.
-O vídeo permanece pendente do grupo.
+Versão de implantação cloud, 12/11/2026. Repositórios e imagens Docker estão
+públicos, e todos os componentes executam em Azure Container Apps com HTTPS
+(seção 7). O vídeo permanece pendente do grupo.
 Referência: documentação original da Entrega 2 (53 páginas), enunciado e prompt
 da Entrega 3. O código e os resultados registrados em VALIDATION.md prevalecem
 sobre propostas. Não há URL pública inventada; consultar PUBLIC_URLS.md.
@@ -169,14 +169,21 @@ Node no Compose padrão; overlay opcional validado com host oficial Node 22,
 chave de função e Azurite local. Dados persistem em volumes; credenciais em
 arquivo ignorado. Gateway em localhost:18080 e frontend :5173.
 
-Homologação de dados cloud real: Atlas M0 e `fuelwiseDB` Azure SQL; suites de
-CRUD/outbox e smoke E2E passaram, com limpeza dos registros. O gateway, frontend,
-BFF e serviços ainda não foram hospedados em URL pública. A Azure Function foi
-testada no host local oficial com Azurite; ainda não há Function App cloud. A
-oferta de Function Consumption não comprova custo zero para Storage, e a API
-gerenciada do Static Web Apps tem runtime diferente do Node 22 atual; ver
-CLOUD_COSTS.md antes de escolher. Publicações de código/imagens estão em
-PUBLIC_URLS.md. Todas as futuras URLs de execução devem usar HTTPS.
+Cloud (12/11/2026): ambiente Azure Container Apps `fuelwise-env` (Brazil
+South, perfil Consumption, scale-to-zero, sem Log Analytics), publicado por
+`scripts/deploy-azure.sh` a partir das imagens do Docker Hub fixadas por digest.
+Apps: frontend (nginx), gateway, BFF (ingress interno), stations (Atlas M0),
+trips (`fuelwiseDB` Azure SQL Free), function (host oficial Azure Functions
+Node 22) e legado (API + PostgreSQL efêmero no mesmo container). Smoke E2E pela
+URL pública do gateway passou: identidade, CRUD de postos/preços, CRUD e
+finalização de viagens, viagem ativa única, agregação com Function e evento
+consumido. Prints em `docs/evidence/cloud/`.
+
+Custo zero: Container Apps usa o grant mensal do plano Consumption. A Function
+roda no host oficial com chaves em arquivo, sem Storage Account. Static Web Apps
+não está disponível nas regiões permitidas pela assinatura Azure for Students,
+por isso o frontend também está no Container Apps. Firewall do SQL e allowlist do
+Atlas aceitam somente os IPs de saída observados do ambiente (/32).
 
 Cada projeto possui README/package/lockfile; Dockerfiles de BFF/Mongo/SQL usam
 usuário node e health checks. CI executa testes, build frontend e smoke Compose.
@@ -194,10 +201,26 @@ usuário node e health checks. CI executa testes, build frontend e smoke Compose
 | Imagem BFF | [cristhiansk/fuelwise-bff:v1](https://hub.docker.com/r/cristhiansk/fuelwise-bff/tags) |
 | Imagem Mongo | [cristhiansk/fuelwise-mongo-service:v1](https://hub.docker.com/r/cristhiansk/fuelwise-mongo-service/tags) |
 | Imagem SQL | [cristhiansk/fuelwise-sql-service:v1](https://hub.docker.com/r/cristhiansk/fuelwise-sql-service/tags) |
+| Imagem Gateway | [cristhiansk/fuelwise-gateway:v1](https://hub.docker.com/r/cristhiansk/fuelwise-gateway/tags) |
+| Imagem Function | [cristhiansk/fuelwise-function:v1](https://hub.docker.com/r/cristhiansk/fuelwise-function/tags) |
+| Imagem Frontend | [cristhiansk/fuelwise-frontend:v1](https://hub.docker.com/r/cristhiansk/fuelwise-frontend/tags) |
+| Imagem Legado (cloud) | [cristhiansk/fuelwise-legacy-cloud:v1](https://hub.docker.com/r/cristhiansk/fuelwise-legacy-cloud/tags) |
 
-Frontend, gateway, Swagger e Function ainda não têm URLs públicas de execução.
-O AsyncAPI está disponível no repositório em `docs/asyncapi.json`; o vídeo será
-adicionado pelo grupo após a gravação.
+### URLs de execução (Azure Container Apps, HTTPS)
+
+| Componente | URL |
+|---|---|
+| Frontend | https://frontend.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
+| API Gateway | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
+| Swagger BFF (via gateway) | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
+| Swagger Microservice Mongo | https://stations.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
+| Swagger Microservice SQL | https://trips.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
+| Azure Function HTTP | https://function.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/indicators (POST, header `x-functions-key`) |
+| Agregação | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/aggregated-data (Bearer) |
+| Eventos | AsyncAPI em [docs/asyncapi.json](https://github.com/LucasTheiss/fuelwise-architecture/blob/vertical-slice/docs/asyncapi.json); auditoria em https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/v1/events (Bearer) |
+
+Primeira requisição após inatividade pode levar até ~1 min (scale-to-zero e
+retomada do Azure SQL serverless). O vídeo será adicionado pelo grupo.
 
 ## 8. Conceitos transversais
 
@@ -247,11 +270,15 @@ atestam SLA, capacidade, segurança de produção ou integração cloud.
 
 ## 11. Riscos e débitos técnicos
 
-Repositórios/imagens públicos e integrações reais Atlas/Azure foram validados.
-Deploy dos serviços, Function cloud e screenshots cloud seguem pendentes. O
-link do vídeo será preenchido pelo grupo.
-Gratuidade da Function/storage exige comprovação. Free hosts têm cold start,
-quotas e suspensão; polling de outbox pode impedir pausa SQL.
+Repositórios/imagens públicos, deploy cloud e smoke E2E público foram validados.
+O link do vídeo será preenchido pelo grupo.
+Ambiente express do Container Apps: sem sidecar, sem volume de secret, IP de
+saída rotativo (novos IPs exigem nova regra /32 no SQL e no Atlas) e ingress
+"interno" do BFF também alcançável pela internet (rotas de dados exigem JWT).
+PostgreSQL do legado é efêmero: contas e transportadoras somem quando o app
+escala a zero (30 min sem tráfego); recriar dados de demo antes da apresentação.
+Cold start e timeout de 5 s do BFF podem gerar 207/503 na primeira chamada.
+Polling de outbox mantém o SQL ativo enquanto o trips estiver em execução.
 Rate limit do gateway é por processo. BFF limita dashboard a 100 registros.
 Migração financeira/denúncias/GPS para novas entidades não implementada; operação
 original continua separada. Não há rollback distribuído de pagamentos.

@@ -11,9 +11,13 @@ Alternativa de desenvolvimento: `npm run dev` usa o mesmo handler em Node HTTP,
 sem simular o runtime Azure. Não é evidência de implantação de Azure Functions.
 
 OpenAPI em `openapi.json`. Configurar FUNCTION_URL e FUNCTION_KEY no BFF.
-Publicação preparada: `func azure functionapp publish NOME_JA_APROVADO`.
-Não criar Function App/storage sem verificar custo e elegibilidade. Não há URL
-pública nem recurso provisionado. Docker não é obrigatório para esta Function.
+Cloud: https://function.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/indicators (POST, header
+`x-functions-key`). Roda no host oficial Azure Functions Node 22 (imagem
+`cristhiansk/fuelwise-function:v1`, `Dockerfile.runtime`) no Azure Container
+Apps, com chaves em arquivo e sem Storage Account. Alternativa com Function App:
+`func azure functionapp publish NOME` (exige Storage, cobrado à parte).
+Deploy cloud: Azure Container Apps (`scripts/deploy-azure.sh` no repositório
+principal); URLs em `docs/PUBLIC_URLS.md`.
 
 No repositório principal, `Dockerfile.runtime` e `compose.functions-runtime.yaml`
 executam o host oficial Node 22 com Azurite local. Gerar chaves descartáveis com

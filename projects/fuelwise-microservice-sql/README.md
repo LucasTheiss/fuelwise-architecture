@@ -21,8 +21,10 @@ Viagem e outbox são gravados na mesma transação; worker processa eventos depo
 
 Docker: `docker build -t fuelwise-sql:v1 .`, porta 3002; configurar variáveis
 AZURE_SQL_* e LEGACY_URL. Azure SQL real é obrigatório na demonstração pública;
-SQL Server local só auxilia desenvolvimento. Deploy/URLs pendentes de acesso e
-confirmação de gratuidade. Não há provisionamento automático.
+SQL Server local só auxilia desenvolvimento. Cloud: Swagger em
+https://trips.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs, conectado ao Azure SQL `fuelwiseDB` (oferta Free).
+Deploy cloud: Azure Container Apps (`scripts/deploy-azure.sh` no repositório
+principal); URLs em `docs/PUBLIC_URLS.md`.
 
 Integrantes: Artur Ribeiro de Souza; Cristhian Rezende; Lucas Andriani Theiss;
 Vinicius da Rosa Padilha.

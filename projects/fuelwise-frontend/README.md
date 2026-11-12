@@ -18,8 +18,11 @@ permanecem em memória, nunca localStorage. Nova sessão após recarregar/expira
 ADMIN gerencia postos; MANAGER gerencia viagens; DRIVER consulta/finaliza suas
 viagens. Cadastros de frota e contas permanecem nas APIs existentes.
 
-Deploy: Azure Static Web Apps **Free**, publicar dist (ou três sites Free para
-shell/remotos), configurar gateway HTTPS e CORS. Nenhuma URL pública provisionada.
+Cloud: https://frontend.redhill-64ef7229.brazilsouth.azurecontainerapps.io (imagem `cristhiansk/fuelwise-frontend:v1`, nginx
+no Azure Container Apps; `runtime-config.js` gerado no start com `GATEWAY_URL`).
+Static Web Apps não é oferecido nas regiões permitidas da assinatura Students.
+Deploy cloud: Azure Container Apps (`scripts/deploy-azure.sh` no repositório
+principal); URLs em `docs/PUBLIC_URLS.md`.
 Docker não é obrigatório para frontend estático. Não há Swagger do frontend;
 contratos HTTP estão nos serviços/BFF. Testar CRUD com bancos reais antes do vídeo.
 
