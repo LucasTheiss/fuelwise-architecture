@@ -6,7 +6,7 @@ Artur Ribeiro de Souza · Cristhian Rezende · Lucas Andriani Theiss · Vinicius
 
 Versão de implantação cloud, 12/11/2026. Repositórios e imagens Docker estão
 públicos, e todos os componentes executam em Azure Container Apps com HTTPS
-(seção 7). O vídeo permanece pendente do grupo.
+(seção 7). Vídeo de demonstração (YouTube, não listado): https://youtu.be/Hx01uVEl2_U.
 Referência: documentação original da Entrega 2 (53 páginas), enunciado e prompt
 da Entrega 3. O código e os resultados registrados em VALIDATION.md prevalecem
 sobre propostas. Não há URL pública inventada; consultar PUBLIC_URLS.md.
@@ -235,11 +235,12 @@ usuário node e health checks. CI executa testes, build frontend e smoke Compose
 | Swagger Microservice Mongo | https://stations.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Swagger Microservice SQL | https://trips.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Azure Function HTTP | https://function.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/indicators (POST, header `x-functions-key`) |
+| Vídeo (YouTube, não listado) | https://youtu.be/Hx01uVEl2_U |
 | Agregação | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/aggregated-data (Bearer) |
 | Eventos | AsyncAPI em [docs/asyncapi.json](https://github.com/LucasTheiss/fuelwise-architecture/blob/vertical-slice/docs/asyncapi.json); auditoria em https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/v1/events (Bearer) |
 
 Primeira requisição após inatividade pode levar até ~1 min (scale-to-zero e
-retomada do Azure SQL serverless). O vídeo será adicionado pelo grupo.
+retomada do Azure SQL serverless).
 
 ## 8. Conceitos transversais
 
@@ -290,7 +291,7 @@ atestam SLA, capacidade, segurança de produção ou integração cloud.
 ## 11. Riscos e débitos técnicos
 
 Repositórios/imagens públicos, deploy cloud e smoke E2E público foram validados.
-O link do vídeo será preenchido pelo grupo.
+Vídeo de demonstração: https://youtu.be/Hx01uVEl2_U.
 Ambiente express do Container Apps: sem sidecar, sem volume de secret, IP de
 saída rotativo (novos IPs exigem nova regra /32 no SQL e no Atlas) e ingress
 "interno" do BFF também alcançável pela internet (rotas de dados exigem JWT).

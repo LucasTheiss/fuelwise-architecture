@@ -15,7 +15,7 @@ Verificados em 12/11/2026. Domínio do ambiente Azure Container Apps:
 | Azure Function HTTP | https://function.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/indicators (POST, header `x-functions-key`) |
 | Agregação BFF | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/aggregated-data (Bearer) |
 | Eventos | AsyncAPI: https://github.com/LucasTheiss/fuelwise-architecture/blob/vertical-slice/docs/asyncapi.json · auditoria: https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/api/v1/events (Bearer) |
-| YouTube não listado | Vídeo gravado pelo grupo; incluir o link aqui e no ARC42 |
+| Vídeo (YouTube, não listado) | https://youtu.be/Hx01uVEl2_U |
 
 Os apps escalam a zero. A primeira requisição após inatividade pode levar até
 ~1 min (cold start e retomada do Azure SQL serverless).
