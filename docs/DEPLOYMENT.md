@@ -39,9 +39,6 @@ Não publicar esse overlay: suas configurações são exclusivas de desenvolvime
 Core Tools continua disponível como alternativa via `npm start` no projeto da
 Function. Este teste local não comprova gratuidade nem implantação na Azure.
 
-Para inspecionar os Swagger, adicionar `-f compose.inspect.yaml` ao comando
-Compose: http://localhost:13001/docs e http://localhost:13002/docs. Apenas portas
-loopback dos serviços são abertas; o frontend continua usando o gateway.
 Ao parar a variante oficial, usar os mesmos `--env-file` e `-f` com `down`, sem `-v`.
 
 Referência da imagem: [Microsoft - containers Functions](https://learn.microsoft.com/en-us/azure/azure-functions/container-concepts).
@@ -125,10 +122,9 @@ Somente após autorização, executar `docker login` interativamente; nunca forn
 token na linha de comando ou arquivo versionado. `scripts/docker-images.ps1
 -DockerHubUser USUARIO` faz builds; `-Push` publica explicitamente.
 
-`scripts/export-projects.ps1` exporta apenas arquivos rastreados dos cinco
-projetos, sem node_modules, segredos ou artefatos temporários. Para preservar
-histórico, alternativa revisável: `git subtree split --prefix=projects/NOME -b
-export-NOME` e push para repositório autorizado. Não executado automaticamente.
+Os cinco repositórios públicos são publicados com histórico via
+`git subtree split --prefix=projects/NOME -b export-NOME` e push do branch para
+`main` do repositório correspondente (somente arquivos rastreados, sem segredos).
 O gateway permanece na infraestrutura do repositório original.
 
 ## Validação

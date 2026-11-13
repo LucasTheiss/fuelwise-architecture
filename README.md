@@ -6,12 +6,11 @@ Os componentes novos estão em `projects/`: Postos/MongoDB, Viagens/Azure SQL,
 BFF, Azure Function e microfrontends React. Gateway em `infrastructure/gateway`.
 O backend original abaixo continua disponível, sem migração destrutiva.
 
-- [Plano e resultados por fase](docs/IMPLEMENTATION_PLAN.md)
 - [Executar com Docker e preparar publicação](docs/DEPLOYMENT.md)
 - [Arquitetura ARC42 e C4](docs/ARC42_DELIVERY3.md)
 - [Custos e limites de autorização](docs/CLOUD_COSTS.md)
 - [Validação efetivamente executada](docs/VALIDATION.md)
-- [Roteiro de demonstração](docs/DEMO_SCRIPT.md)
+- [Roteiro do vídeo](roteiro.md)
 
 `compose.delivery.yaml` usa volumes próprios. Frontend local em
 http://localhost:5173 e gateway em http://localhost:18080. Cloud (Azure Container
@@ -85,7 +84,7 @@ Outras opções já têm defaults: JWT TTL, CORS, timeouts e SSL do banco. Consu
 | API de postos externos | Lista dois registros explicitamente fictícios, com `origin: "MOCK"`. Os postos externos simulados **não são persistidos**; para abastecimento, cadastre um posto pelo endpoint local. |
 | Firebase Cloud Messaging | Registra notificações no outbox do PostgreSQL como `SIMULATED` e permite listá-las pela API, **sem enviar push real**. |
 
-Para usar integrações reais, configure `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `STATIONS_API_URL` e variáveis FCM, conforme os contratos de `docs/DECISIONS.md`. **Os provedores comerciais e seus endpoints reais não foram definidos na documentação original**; os adaptadores HTTP são contratos de referência que precisam ser ajustados ao fornecedor.
+Para usar integrações reais, configure `INTEGRATION_MODE=live`, `PAYMENT_PROVIDER=http`, `PAYMENT_API_URL`, `PAYMENT_API_KEY`, `PAYMENT_SUPPORTS_IDEMPOTENCY=true`, `GPS_API_URL`, `STATIONS_API_URL` e variáveis FCM. **Os provedores comerciais e seus endpoints reais não foram definidos na documentação original**; os adaptadores HTTP são contratos de referência que precisam ser ajustados ao fornecedor.
 
 ## Organização: um slice por caso de uso
 
@@ -101,8 +100,8 @@ fuelwise-backend/
 ├── docs/
 │   ├── API.md
 │   ├── REQUIREMENTS.md
-│   ├── DECISIONS.md
-│   └── references/
+│   ├── ARC42_DELIVERY3.md      # ARC42 + C4 da Entrega 3
+│   └── evidence/               # prints da cloud e Architecture Canvas
 ├── scripts/
 │   ├── migrate.js
 │   ├── seed-admin.js

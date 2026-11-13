@@ -31,8 +31,6 @@ de validação local, nem validação local com homologação Atlas/Azure.
 
 ## Falhas encontradas e corrigidas
 
-- Convenção de nomes aplicada ao documento de entrada: preservado o nome original,
-  com exceção restrita a docs/codex no teste.
 - Dependências `file:../..` adicionadas pelo npm --prefix: removidas; lockfiles
   regenerados no diretório correto e builds independentes executados.
 - Porta Windows 8080 indisponível: gateway publicado somente em loopback 18080.

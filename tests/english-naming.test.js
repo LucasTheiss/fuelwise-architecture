@@ -18,7 +18,6 @@ test('all source, database and document filenames are English-style ASCII', asyn
   for (const root of roots) {
     for (const file of await walk(resolve(root))) {
       // User-provided reference documents retain their original filenames.
-      if (relative(process.cwd(), file).replaceAll('\\', '/').startsWith('docs/codex/')) continue;
       const parts = relative(process.cwd(), file).split(/[\\/]/);
       assert.ok(parts.every(part => /^[A-Za-z0-9_.-]+$/.test(part)), `Invalid path: ${file}`);
     }

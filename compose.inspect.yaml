@@ -1,6 +1,0 @@
-# Optional local Swagger inspection; databases remain unexposed.
-services:
-  stations:
-    ports: ["127.0.0.1:13001:3001"]
-  trips:
-    ports: ["127.0.0.1:13002:3002"]

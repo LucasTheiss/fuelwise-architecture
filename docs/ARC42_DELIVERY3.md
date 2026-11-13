@@ -177,7 +177,7 @@ trips (`fuelwiseDB` Azure SQL Free), function (host oficial Azure Functions
 Node 22) e legado (API + PostgreSQL efêmero no mesmo container). Smoke E2E pela
 URL pública do gateway passou: identidade, CRUD de postos/preços, CRUD e
 finalização de viagens, viagem ativa única, agregação com Function e evento
-consumido. Prints em `docs/evidence/cloud/`.
+consumido. Prints em `docs/evidence/cloud/` (frontend, conflito 409, gateway, `/aggregated-data` com o resultado da Function em `analytics`, eventos e Swagger BFF/Mongo/SQL); Canvas em `docs/evidence/architecture-canvas.png`.
 
 ```mermaid
 flowchart LR
@@ -302,4 +302,4 @@ Rate limit do gateway é por processo. BFF limita dashboard a 100 registros.
 Migração financeira/denúncias/GPS para novas entidades não implementada; operação
 original continua separada. Não há rollback distribuído de pagamentos.
 Produção depende de teste de carga, backup/restauração, revisão de ameaças e
-observabilidade operacional. Ver PUBLIC_URLS.md, CLOUD_COSTS.md e DEMO_SCRIPT.md.
+observabilidade operacional. Ver PUBLIC_URLS.md, CLOUD_COSTS.md e roteiro.md.
