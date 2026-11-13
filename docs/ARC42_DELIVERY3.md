@@ -230,7 +230,7 @@ usuário node e health checks. CI executa testes, build frontend e smoke Compose
 | Componente | URL |
 |---|---|
 | Frontend | https://frontend.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
-| API Gateway | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
+| API Gateway | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/health/live (health; rotas documentadas em /docs) |
 | Swagger BFF (via gateway) | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Swagger Microservice Mongo | https://stations.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Swagger Microservice SQL | https://trips.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |

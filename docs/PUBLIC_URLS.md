@@ -8,7 +8,7 @@ Verificados em 12/11/2026. Domínio do ambiente Azure Container Apps:
 | Artefato | URL |
 |---|---|
 | Frontend (microfrontend React) | https://frontend.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
-| API Gateway | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io |
+| API Gateway | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/health/live (health; rotas documentadas em /docs) |
 | Swagger BFF (via gateway) | https://gateway.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Swagger Microservice Mongo (Postos) | https://stations.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
 | Swagger Microservice SQL (Viagens) | https://trips.redhill-64ef7229.brazilsouth.azurecontainerapps.io/docs |
